@@ -5,529 +5,474 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trainingsplan – Rennsteiglauf 2027</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif; background: #f0f2f5; color: #222; }
+:root {
+  --navy:    #0f172a;
+  --navy2:   #1e293b;
+  --navy3:   #334155;
+  --indigo:  #6366f1;
+  --indigo2: #818cf8;
+  --white:   #ffffff;
+  --g50:     #f8fafc;
+  --g100:    #f1f5f9;
+  --g200:    #e2e8f0;
+  --g400:    #94a3b8;
+  --g600:    #475569;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--g50);color:var(--navy);}
 
-  header {
-    background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
-    color: white; padding: 24px 32px; position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
-  }
-  header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.5px; }
-  header p { font-size: 0.85rem; opacity: 0.8; margin-top: 4px; }
+/* ── HERO ── */
+.hero{
+  background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 55%,#1e293b 100%);
+  color:#fff;padding:48px 36px 40px;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;top:-30%;right:-5%;width:550px;height:550px;
+  background:radial-gradient(circle,rgba(99,102,241,.18) 0%,transparent 68%);
+  pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;bottom:-40%;left:-5%;width:400px;height:400px;
+  background:radial-gradient(circle,rgba(129,140,248,.1) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(99,102,241,.25);border:1px solid rgba(99,102,241,.45);
+  border-radius:20px;padding:4px 14px;font-size:.7rem;font-weight:700;
+  letter-spacing:1.2px;text-transform:uppercase;margin-bottom:18px;color:var(--indigo2);
+}
+.hero h1{font-size:2.2rem;font-weight:900;line-height:1.15;margin-bottom:6px;letter-spacing:-.5px;}
+.hero-sub{font-size:.85rem;opacity:.55;margin-bottom:36px;}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;max-width:660px;}
+.scard{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;padding:14px 16px;backdrop-filter:blur(6px);
+}
+.scard .num{font-size:1.65rem;font-weight:800;line-height:1;color:var(--indigo2);}
+.scard .lbl{font-size:.64rem;opacity:.5;margin-top:4px;text-transform:uppercase;letter-spacing:.6px;}
 
-  .legend {
-    display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 32px;
-    background: white; border-bottom: 1px solid #ddd;
-  }
-  .legend-item {
-    display: flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 500;
-  }
-  .legend-dot {
-    width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0;
-  }
+/* ── PROGRESS BAR ── */
+.prog-bar{
+  background:var(--navy2);color:#fff;padding:10px 36px;
+  display:flex;align-items:center;gap:14px;font-size:.78rem;
+}
+.prog-bar .lbl{opacity:.4;white-space:nowrap;}
+.prog-track{flex:1;height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--indigo),var(--indigo2));border-radius:3px;transition:width .6s ease;}
+.prog-bar .pct{font-weight:700;font-size:.9rem;color:var(--indigo2);white-space:nowrap;}
 
-  .phases-bar {
-    display: flex; gap: 8px; padding: 10px 32px; background: #fafafa;
-    border-bottom: 1px solid #eee; flex-wrap: wrap;
-  }
-  .phase-badge {
-    font-size: 0.7rem; padding: 3px 10px; border-radius: 12px;
-    font-weight: 600; border: 1px solid rgba(0,0,0,0.1);
-  }
+/* ── SUBSCRIBE BAR ── */
+.sub-bar{
+  background:#fff;border-bottom:1px solid var(--g200);
+  padding:12px 36px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.sub-bar p{font-size:.78rem;color:var(--g600);flex:1;}
+.btn{
+  display:inline-flex;align-items:center;gap:6px;padding:8px 18px;
+  border-radius:9px;font-size:.77rem;font-weight:700;cursor:pointer;
+  text-decoration:none;border:none;transition:all .15s;white-space:nowrap;
+}
+.btn-primary{background:var(--indigo);color:#fff;box-shadow:0 2px 8px rgba(99,102,241,.35);}
+.btn-primary:hover{background:#4f46e5;transform:translateY(-1px);}
+.btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--g200);}
+.btn-outline:hover{border-color:var(--indigo);color:var(--indigo);}
 
-  .calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 20px; padding: 24px 32px;
-  }
+/* ── LEGEND ── */
+.legend{
+  padding:12px 36px;background:#fff;border-bottom:1px solid var(--g200);
+  display:flex;flex-wrap:wrap;gap:6px;align-items:center;
+}
+.leg-t{font-size:.65rem;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;margin-right:4px;}
+.leg-chip{
+  display:flex;align-items:center;gap:4px;padding:3px 10px;
+  border-radius:20px;font-size:.68rem;font-weight:700;color:#fff;
+}
 
-  .month-card {
-    background: white; border-radius: 12px;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.08); overflow: hidden;
-  }
-  .month-header {
-    padding: 12px 16px; font-weight: 700; font-size: 1rem;
-    background: #1a237e; color: white;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .month-header span { font-size: 0.75rem; opacity: 0.7; font-weight: 400; }
-  .phase-label {
-    font-size: 0.65rem; padding: 2px 8px; border-radius: 10px;
-    background: rgba(255,255,255,0.2); font-weight: 600;
-  }
+/* ── PHASES STRIP ── */
+.phase-strip{
+  padding:10px 36px;background:var(--g50);border-bottom:1px solid var(--g200);
+  display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+}
+.phase-strip::-webkit-scrollbar{display:none;}
+.phase-pill{
+  white-space:nowrap;padding:4px 12px;border-radius:20px;font-size:.65rem;
+  font-weight:700;border:1px solid rgba(0,0,0,.08);flex-shrink:0;
+}
 
-  .weekday-header {
-    display: grid; grid-template-columns: repeat(7, 1fr);
-    background: #e8eaf6;
-  }
-  .weekday-header div {
-    text-align: center; font-size: 0.65rem; font-weight: 700;
-    padding: 5px 2px; color: #3949ab; text-transform: uppercase;
-  }
+/* ── CALENDAR GRID ── */
+.cal-wrap{padding:24px 36px;display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px;}
 
-  .cal-grid {
-    display: grid; grid-template-columns: repeat(7, 1fr);
-    gap: 1px; background: #eee;
-  }
-  .cal-cell {
-    background: white; min-height: 72px; padding: 4px;
-    font-size: 0.65rem; position: relative;
-  }
-  .cal-cell.empty { background: #fafafa; }
-  .cal-cell.today { background: #fff8e1; }
-  .day-num {
-    font-size: 0.7rem; font-weight: 600; color: #555; margin-bottom: 3px;
-  }
-  .cal-cell.sunday .day-num { color: #c62828; }
+.month-card{
+  background:#fff;border-radius:18px;overflow:hidden;
+  box-shadow:0 1px 4px rgba(0,0,0,.05),0 6px 20px rgba(0,0,0,.04);
+  transition:box-shadow .2s,transform .2s;
+}
+.month-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.09),0 20px 50px rgba(0,0,0,.06);transform:translateY(-2px);}
 
-  .activity {
-    border-radius: 4px; padding: 2px 4px; margin-bottom: 2px;
-    line-height: 1.3; font-size: 0.62rem; font-weight: 500;
-  }
-  .act-race    { background: #ffcdd2; color: #b71c1c; border-left: 3px solid #e53935; }
-  .act-long    { background: #bbdefb; color: #0d47a1; border-left: 3px solid #1e88e5; }
-  .act-tempo   { background: #ffe0b2; color: #bf360c; border-left: 3px solid #fb8c00; }
-  .act-interval{ background: #fce4ec; color: #880e4f; border-left: 3px solid #e91e63; }
-  .act-medium  { background: #c8e6c9; color: #1b5e20; border-left: 3px solid #43a047; }
-  .act-easy    { background: #e8f5e9; color: #2e7d32; border-left: 3px solid #81c784; }
-  .act-strength{ background: #e1bee7; color: #4a148c; border-left: 3px solid #8e24aa; }
-  .act-baseball{ background: #fff9c4; color: #f57f17; border-left: 3px solid #f9a825; }
-  .act-rest    { background: #f5f5f5; color: #9e9e9e; }
-  .act-recovery{ background: #e0f2f1; color: #004d40; border-left: 3px solid #26a69a; }
-  .act-taper   { background: #f3e5f5; color: #4a148c; border-left: 3px solid #ab47bc; }
+.month-head{
+  background:linear-gradient(135deg,var(--navy) 0%,#1e1b4b 100%);
+  padding:14px 16px;display:flex;justify-content:space-between;align-items:flex-start;
+}
+.mname{color:#fff;font-size:1rem;font-weight:800;}
+.mphase{font-size:.58rem;background:rgba(255,255,255,.14);color:rgba(255,255,255,.85);padding:2px 8px;border-radius:10px;margin-top:4px;display:inline-block;}
+.mmeta{text-align:right;}
+.mkm{font-size:.65rem;color:rgba(255,255,255,.4);}
+.mrace{font-size:.6rem;background:rgba(239,68,68,.3);color:#fca5a5;padding:2px 8px;border-radius:10px;display:inline-block;margin-top:3px;}
 
-  .race-star { font-size: 0.8rem; }
+.dow-row{display:grid;grid-template-columns:repeat(7,1fr);background:var(--g50);border-bottom:1px solid var(--g100);}
+.dow-row div{text-align:center;font-size:.58rem;font-weight:800;color:var(--g400);padding:5px 2px;text-transform:uppercase;letter-spacing:.4px;}
+.dow-row div:last-child{color:#ef4444;}
 
-  .stats-bar {
-    padding: 16px 32px; background: white; border-top: 1px solid #eee;
-    display: flex; gap: 24px; flex-wrap: wrap;
-  }
-  .stat { text-align: center; }
-  .stat-num { font-size: 1.4rem; font-weight: 700; color: #1a237e; }
-  .stat-label { font-size: 0.72rem; color: #888; }
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);}
+.dc{min-height:76px;padding:5px 4px;border-right:1px solid var(--g100);border-bottom:1px solid var(--g100);position:relative;}
+.dc:nth-child(7n){border-right:none;}
+.dc.empty{background:var(--g50);}
+.dc.sun .dn{color:#ef4444;}
+.dc.tod{background:#fef9c3;}
+.dc.tod .dn{background:var(--indigo);color:#fff;border-radius:50%;width:17px;height:17px;display:flex;align-items:center;justify-content:center;font-size:.58rem;}
+.dn{font-size:.62rem;font-weight:700;color:var(--g400);margin-bottom:3px;line-height:17px;}
 
-  @media (max-width: 600px) {
-    header { padding: 16px; }
-    .calendar-grid { padding: 12px; gap: 14px; }
-    .legend { padding: 10px 16px; }
-  }
-  @media print {
-    header { position: static; }
-    .calendar-grid { grid-template-columns: repeat(3, 1fr); }
-  }
+.chip{border-radius:4px;padding:2px 4px;font-size:.56rem;font-weight:700;line-height:1.35;margin-bottom:2px;display:block;}
+.chip .det{font-weight:400;opacity:.75;font-size:.52rem;}
+.ch-race    {background:#fef2f2;color:#991b1b;border-left:2px solid #ef4444;}
+.ch-long    {background:#eff6ff;color:#1e40af;border-left:2px solid #3b82f6;}
+.ch-tempo   {background:#fff7ed;color:#9a3412;border-left:2px solid #f97316;}
+.ch-interval{background:#fdf2f8;color:#831843;border-left:2px solid #ec4899;}
+.ch-medium  {background:#f0fdf4;color:#14532d;border-left:2px solid #22c55e;}
+.ch-easy    {background:#f7fee7;color:#3f6212;border-left:2px solid #84cc16;}
+.ch-strength{background:#faf5ff;color:#581c87;border-left:2px solid #a855f7;}
+.ch-baseball{background:#fefce8;color:#713f12;border-left:2px solid #eab308;}
+.ch-rest    {background:var(--g50);color:var(--g400);}
+.ch-recovery{background:#f0fdfa;color:#134e4a;border-left:2px solid #14b8a6;}
+.ch-taper   {background:#fdf4ff;color:#701a75;border-left:2px solid #c084fc;}
+
+/* ── RACE CARDS ── */
+.race-section{padding:0 36px 48px;}
+.sec-title{font-size:1.1rem;font-weight:900;color:var(--navy);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.race-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:12px;}
+.rcard{
+  background:#fff;border-radius:14px;padding:16px;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+  display:flex;gap:14px;align-items:flex-start;
+  transition:transform .15s,box-shadow .15s;text-decoration:none;color:inherit;
+}
+.rcard:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.1);}
+.rcard.main{background:linear-gradient(135deg,#fff7ed,#fefce8);border:1.5px solid #fbbf24;}
+.rnum{
+  width:34px;height:34px;border-radius:9px;background:var(--indigo);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;font-weight:900;flex-shrink:0;
+}
+.rcard.main .rnum{background:linear-gradient(135deg,#f59e0b,#ef4444);}
+.rinfo h3{font-size:.85rem;font-weight:800;margin-bottom:3px;}
+.rmeta{font-size:.7rem;color:var(--g400);}
+.rcup{font-size:.62rem;font-weight:700;color:var(--indigo);margin-top:4px;}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--navy2);color:rgba(255,255,255,.4);
+  text-align:center;padding:20px;font-size:.72rem;
+}
+
+@media(max-width:640px){
+  .hero{padding:32px 18px 28px;}
+  .hero h1{font-size:1.5rem;}
+  .prog-bar,.sub-bar,.legend,.phase-strip{padding:10px 18px;}
+  .cal-wrap{padding:16px 18px;gap:14px;}
+  .race-section{padding:0 18px 36px;}
+}
+@media print{
+  .hero{position:static;}
+  .sub-bar{display:none;}
+  .cal-wrap{grid-template-columns:repeat(3,1fr);}
+}
 </style>
 </head>
 <body>
 
-<header>
-  <h1>🏔️ Trainingsplan — Rennsteiglauf 2027 Supermarathon</h1>
-  <p>Andreas Hanrath · Juni 2026 – Mai 2027 · ~75 km / ~1.400 Hm</p>
-</header>
-
-<div class="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:#e53935"></div> Wettkampf</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#1e88e5"></div> Langer Lauf</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#fb8c00"></div> Tempolauf</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#e91e63"></div> Intervall</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#43a047"></div> Mittellauf</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#81c784"></div> Lockerer Lauf</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#8e24aa"></div> Krafttraining</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#f9a825"></div> Baseball ⚾</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#26a69a"></div> Regeneration</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#ab47bc"></div> Taper</div>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">🏔️ Trainingsplan</div>
+  <h1>Rennsteiglauf 2027<br>Supermarathon</h1>
+  <p class="hero-sub">Andreas Hanrath · Dortmund · ~75 km · ~1.400 Hm · 22. Mai 2027</p>
+  <div class="stats-row">
+    <div class="scard"><div class="num" id="cd">—</div><div class="lbl">Tage bis zum Ziel</div></div>
+    <div class="scard"><div class="num">12</div><div class="lbl">Monate Vorbereitung</div></div>
+    <div class="scard"><div class="num">8</div><div class="lbl">Wettkämpfe</div></div>
+    <div class="scard"><div class="num">~750 km</div><div class="lbl">Geplante Laufkilometer</div></div>
+  </div>
 </div>
 
-<div id="app"></div>
+<!-- PROGRESS -->
+<div class="prog-bar">
+  <span class="lbl">Vorbereitung</span>
+  <div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+  <span class="pct" id="pp">0%</span>
+</div>
+
+<!-- SUBSCRIBE -->
+<div class="sub-bar">
+  <p>📅 Trainingsplan direkt im Kalender – alle Einheiten & Wettkämpfe</p>
+  <a class="btn btn-primary" href="webcal://andreas4paper.github.io/trainingsplan-2027/calendar.ics">
+    🔔 Kalender abonnieren
+  </a>
+  <button class="btn btn-outline" onclick="dlIcs()">⬇️ .ics herunterladen</button>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <span class="leg-t">Legende</span>
+  <span class="leg-chip" style="background:#ef4444">🏆 Rennen</span>
+  <span class="leg-chip" style="background:#3b82f6">🔵 Langer Lauf</span>
+  <span class="leg-chip" style="background:#f97316">⚡ Tempo</span>
+  <span class="leg-chip" style="background:#ec4899">💥 Intervall</span>
+  <span class="leg-chip" style="background:#22c55e">🟢 Mittellauf</span>
+  <span class="leg-chip" style="background:#84cc16">🌿 Locker</span>
+  <span class="leg-chip" style="background:#a855f7">💪 Kraft</span>
+  <span class="leg-chip" style="background:#eab308">⚾ Baseball</span>
+  <span class="leg-chip" style="background:#14b8a6">💤 Regen.</span>
+  <span class="leg-chip" style="background:#c084fc">↘ Taper</span>
+</div>
+
+<!-- PHASES -->
+<div class="phase-strip" id="ps"></div>
+
+<!-- CALENDAR -->
+<div class="cal-wrap" id="cal"></div>
+
+<!-- RACES -->
+<div class="race-section">
+  <h2 class="sec-title">🏁 Wettkampfkalender</h2>
+  <div class="race-grid" id="rl"></div>
+</div>
+
+<footer>Trainingsplan Rennsteiglauf 2027 · Andreas Hanrath · Generiert mit Claude</footer>
 
 <script>
-// ============================================================
-// DATA
-// ============================================================
+// ── DATA ──────────────────────────────────────────────────────────────────
+const GOAL = new Date(2027,4,22);
 
 const RACES = [
-  { date: '2026-08-30', name: 'Grafschaftslauf Rietberg',       dist: '28,5 km',           cup: 'ATRC #1', url: 'https://www.grafschaftslauf.de/web/' },
-  { date: '2026-09-13', name: 'City Move – Tag des Sportes',    dist: '10 km',             cup: 'ATRC #2', url: 'https://www.bielefeld.jetzt/run' },
-  { date: '2026-09-26', name: 'Böckstiegellauf Werther',        dist: '18 km',             cup: 'ATRC #3', url: 'https://www.boeckstiegellauf.de' },
-  { date: '2026-10-25', name: 'DJK Halbmarathon Gütersloh',     dist: '21,1 km',           cup: 'ATRC #4', url: 'https://www.djkguetersloh.de' },
-  { date: '2026-12-13', name: 'Weihnachts-Crosslauf Borgholzhausen', dist: '16 km',        cup: 'ATRC #5', url: 'https://www.lcsolbad.de' },
-  { date: '2027-03-07', name: 'Luisenturmlauf Borgholzhausen',  dist: '21,1 km Trail',     cup: 'ATRC #6', url: 'https://www.lcsolbad.de' },
-  { date: '2027-04-25', name: 'Hermannslauf Detmold–Bielefeld', dist: '31,1 km',           cup: 'ATRC #7 🔥', url: 'https://www.hermannslauf.de' },
-  { date: '2027-05-22', name: 'RENNSTEIGLAUF SUPERMARATHON',    dist: '~75 km / ~1.400 Hm', cup: '🏆 HAUPTZIEL', url: 'https://www.rennsteiglauf.de' },
+  {date:'2026-08-30',name:'Grafschaftslauf Rietberg',      dist:'28,5 km',    cup:'ATRC #1',url:'https://www.grafschaftslauf.de/web/',  sh:7},
+  {date:'2026-09-13',name:'City Move – Tag des Sportes',   dist:'10 km',      cup:'ATRC #2',url:'https://www.bielefeld.jetzt/run',       sh:9},
+  {date:'2026-09-26',name:'Böckstiegellauf Werther',       dist:'18 km',      cup:'ATRC #3',url:'https://www.boeckstiegellauf.de',       sh:9},
+  {date:'2026-10-25',name:'DJK Halbmarathon Gütersloh',    dist:'21,1 km',    cup:'ATRC #4',url:'https://www.djkguetersloh.de',          sh:9},
+  {date:'2026-12-13',name:'Weihnachts-Crosslauf',          dist:'16 km',      cup:'ATRC #5',url:'https://www.lcsolbad.de',               sh:10},
+  {date:'2027-03-07',name:'Luisenturmlauf Borgholzhausen', dist:'21,1 km Trail',cup:'ATRC #6',url:'https://www.lcsolbad.de',             sh:10},
+  {date:'2027-04-25',name:'Hermannslauf Detmold–Bielefeld',dist:'31,1 km',    cup:'ATRC #7 🔥',url:'https://www.hermannslauf.de',        sh:9},
+  {date:'2027-05-22',name:'RENNSTEIGLAUF SUPERMARATHON',   dist:'~75 km / ~1.400 Hm',cup:'🏆 HAUPTZIEL',url:'https://www.rennsteiglauf.de', sh:7},
 ];
+const raceMap = new Map(RACES.map(r=>[r.date,r]));
 
-const raceSet = new Map(RACES.map(r => [r.date, r]));
-
-// Baseball: Mon + Wed, from Sep 15 to Nov 30 2026
-const BASEBALL_START = new Date('2026-09-15');
-const BASEBALL_END   = new Date('2026-11-30');
-
-// ============================================================
-// PHASES
-// Each phase has a weekly template: {0:Sun,1:Mon,...,6:Sat}
-// Types: race, long, tempo, interval, medium, easy, strength, baseball, rest, recovery
-// ============================================================
+// Baseball BIS Mitte September (Mo + Mi, 19-21 Uhr)
+const BB_END = new Date(2026,8,14); // Sep 14
 
 const PHASES = [
-  {
-    name: 'Phase 1 – Grundlage',
-    color: '#c8e6c9',
-    start: '2026-06-01',
-    end:   '2026-07-19',
-    kmWeek: '~45 km',
-    template: {
-      0: { type: 'long',     text: 'Langer Lauf 18 km', detail: '7:00/km' },
-      1: { type: 'rest',     text: 'Ruhe', detail: '' },
-      2: { type: 'easy',     text: 'Locker 8 km', detail: '6:45/km' },
-      3: { type: 'medium',   text: 'Mittellauf 12 km', detail: '6:30/km' },
-      4: { type: 'strength', text: 'Kraft 60 min', detail: 'Rumpf + Beine' },
-      5: { type: 'rest',     text: 'Ruhe', detail: '' },
-      6: { type: 'strength', text: 'Kraft 45 min + Locker 6 km', detail: '' },
-    }
-  },
-  {
-    name: 'Phase 2 – Aufbau I',
-    color: '#b3e5fc',
-    start: '2026-07-20',
-    end:   '2026-08-23',
-    kmWeek: '~54 km',
-    template: {
-      0: { type: 'long',     text: 'Langer Lauf 22 km', detail: '6:45/km' },
-      1: { type: 'rest',     text: 'Ruhe', detail: '' },
-      2: { type: 'tempo',    text: 'Tempolauf 10 km', detail: '5:30/km' },
-      3: { type: 'medium',   text: 'Mittellauf 14 km', detail: '6:20/km' },
-      4: { type: 'strength', text: 'Kraft 60 min', detail: 'Rumpf + Beine' },
-      5: { type: 'rest',     text: 'Ruhe', detail: '' },
-      6: { type: 'strength', text: 'Kraft 45 min + Easy 8 km', detail: '6:45/km' },
-    }
-  },
-  {
-    name: 'Phase 3 – Aufbau II (⚾ ab Mitte Sept.)',
-    color: '#fff9c4',
-    start: '2026-08-24',
-    end:   '2026-10-11',
-    kmWeek: '~55 km',
-    // Baseball-aware: see getActivity()
-    template: {
-      0: { type: 'long',     text: 'Langer Lauf 24 km', detail: '6:45/km' },
-      1: { type: 'rest',     text: 'Ruhe', detail: '' },           // Mon → Baseball ab Sep15
-      2: { type: 'interval', text: 'Intervall 10 km', detail: '4×2km @ 5:00/km' },
-      3: { type: 'medium',   text: 'Mittellauf 14 km', detail: '6:20/km' }, // Wed → Baseball ab Sep15
-      4: { type: 'strength', text: 'Kraft 60 min + Mittellauf 14 km', detail: '6:20/km' },
-      5: { type: 'easy',     text: 'Locker 8 km', detail: '6:45/km' },
-      6: { type: 'strength', text: 'Kraft 45 min', detail: '' },
-    }
-  },
-  {
-    name: 'Phase 4 – Aufbau III',
-    color: '#ffe0b2',
-    start: '2026-10-12',
-    end:   '2026-12-13',
-    kmWeek: '~62 km',
-    template: {
-      0: { type: 'long',     text: 'Langer Lauf 28–32 km', detail: '6:30/km Trail' },
-      1: { type: 'rest',     text: 'Ruhe', detail: '' },           // Mon: Baseball through Nov
-      2: { type: 'tempo',    text: 'Tempolauf 12 km', detail: '5:20/km' },
-      3: { type: 'medium',   text: 'Mittellauf 14 km', detail: '6:20/km' }, // Wed: Baseball through Nov
-      4: { type: 'strength', text: 'Kraft 60 min + Mittellauf 12 km', detail: '6:20/km' },
-      5: { type: 'rest',     text: 'Ruhe', detail: '' },
-      6: { type: 'strength', text: 'Kraft 45 min + Easy 8 km', detail: '6:45/km' },
-    }
-  },
-  {
-    name: 'Phase 5 – Ultra-Peak',
-    color: '#e8eaf6',
-    start: '2026-12-15',
-    end:   '2027-02-14',
-    kmWeek: '~72 km',
-    template: {
-      0: { type: 'long',     text: 'Langer Lauf 32–42 km', detail: '7:00/km (Trail-Charakter)' },
-      1: { type: 'rest',     text: 'Ruhe', detail: '' },
-      2: { type: 'medium',   text: 'Mittellauf 14 km', detail: '6:20/km' },
-      3: { type: 'tempo',    text: 'Tempolauf 12 km', detail: '5:20/km' },
-      4: { type: 'strength', text: 'Kraft 60 min', detail: 'Oberkörper + Stabilität' },
-      5: { type: 'easy',     text: 'Locker 8 km', detail: '6:45/km' },
-      6: { type: 'strength', text: 'Kraft 45 min + Trail 12 km', detail: '7:00/km' },
-    }
-  },
-  {
-    name: 'Phase 6 – Rennvorbereitung',
-    color: '#f3e5f5',
-    start: '2027-02-15',
-    end:   '2027-04-19',
-    kmWeek: '~70 km',
-    template: {
-      0: { type: 'long',     text: 'Trail-Lauf 28–32 km', detail: '7:00/km + Höhenmeter' },
-      1: { type: 'rest',     text: 'Ruhe', detail: '' },
-      2: { type: 'interval', text: 'Intervall 10 km', detail: '3×3km @ 5:00/km' },
-      3: { type: 'medium',   text: 'Mittellauf 14 km', detail: '6:15/km' },
-      4: { type: 'strength', text: 'Kraft 60 min', detail: 'Beine + Rumpf' },
-      5: { type: 'easy',     text: 'Locker 8 km', detail: '6:45/km' },
-      6: { type: 'strength', text: 'Kraft 45 min + Trail 12 km', detail: '7:00/km' },
-    }
-  },
-  {
-    name: 'Phase 7 – Taper',
-    color: '#fce4ec',
-    start: '2027-04-20',
-    end:   '2027-05-22',
-    kmWeek: '↘ 50→30→15 km',
-    template: {
-      0: { type: 'taper',    text: 'Taper-Lauf 18 km', detail: '7:00/km' },
-      1: { type: 'rest',     text: 'Ruhe', detail: '' },
-      2: { type: 'taper',    text: 'Locker 8 km', detail: '7:00/km' },
-      3: { type: 'taper',    text: 'Locker 6 km', detail: '7:00/km' },
-      4: { type: 'strength', text: 'Aktivierung 30 min', detail: 'leicht' },
-      5: { type: 'rest',     text: 'Ruhe', detail: '' },
-      6: { type: 'taper',    text: 'Sehr locker 5 km', detail: '7:15/km' },
-    }
-  },
+  {id:1,name:'Phase 1 – Grundlage',   col:'#dcfce7',tc:'#14532d',start:'2026-06-01',end:'2026-07-19',km:'~45 km/Wo',
+   t:{0:{y:'long',    a:'Langer Lauf 18 km',    b:'7:00/km'},
+      1:{y:'rest',    a:'Ruhe',                  b:''},
+      2:{y:'easy',    a:'Locker 8 km',           b:'6:45/km'},
+      3:{y:'medium',  a:'Mittellauf 12 km',      b:'6:30/km'},
+      4:{y:'strength',a:'Kraft 60 min',          b:'Rumpf + Beine'},
+      5:{y:'rest',    a:'Ruhe',                  b:''},
+      6:{y:'strength',a:'Kraft 45 min + 6 km',  b:'6:45/km'}}},
+  {id:2,name:'Phase 2 – Aufbau I',    col:'#dbeafe',tc:'#1e3a8a',start:'2026-07-20',end:'2026-08-23',km:'~54 km/Wo',
+   t:{0:{y:'long',    a:'Langer Lauf 22 km',    b:'6:45/km'},
+      1:{y:'rest',    a:'Ruhe',                  b:''},
+      2:{y:'tempo',   a:'Tempolauf 10 km',       b:'5:30/km'},
+      3:{y:'medium',  a:'Mittellauf 14 km',      b:'6:20/km'},
+      4:{y:'strength',a:'Kraft 60 min',          b:'Rumpf + Beine'},
+      5:{y:'rest',    a:'Ruhe',                  b:''},
+      6:{y:'strength',a:'Kraft 45 min + 8 km',  b:'6:45/km'}}},
+  {id:3,name:'Phase 3 – Aufbau II',   col:'#fef9c3',tc:'#713f12',start:'2026-08-24',end:'2026-10-11',km:'~56 km/Wo',
+   t:{0:{y:'long',    a:'Langer Lauf 24 km',         b:'6:45/km'},
+      1:{y:'rest',    a:'Ruhe',                       b:''},
+      2:{y:'interval',a:'Intervall 10 km',            b:'4×2 km @ 5:00/km'},
+      3:{y:'medium',  a:'Mittellauf 14 km',           b:'6:20/km'},
+      4:{y:'strength',a:'Kraft 60 min + Mittel 14 km',b:'6:20/km'},
+      5:{y:'easy',    a:'Locker 8 km',                b:'6:45/km'},
+      6:{y:'strength',a:'Kraft 45 min',               b:''}}},
+  {id:4,name:'Phase 4 – Aufbau III',  col:'#ffedd5',tc:'#7c2d12',start:'2026-10-12',end:'2026-12-13',km:'~62 km/Wo',
+   t:{0:{y:'long',    a:'Langer Lauf 28–32 km',       b:'6:30/km Trail'},
+      1:{y:'rest',    a:'Ruhe',                        b:''},
+      2:{y:'tempo',   a:'Tempolauf 12 km',             b:'5:20/km'},
+      3:{y:'medium',  a:'Mittellauf 14 km',            b:'6:20/km'},
+      4:{y:'strength',a:'Kraft 60 min + Mittel 12 km', b:'6:20/km'},
+      5:{y:'rest',    a:'Ruhe',                        b:''},
+      6:{y:'strength',a:'Kraft 45 min + Easy 8 km',   b:'6:45/km'}}},
+  {id:5,name:'Phase 5 – Ultra-Peak',  col:'#e0e7ff',tc:'#312e81',start:'2026-12-14',end:'2027-02-14',km:'~72 km/Wo',
+   t:{0:{y:'long',    a:'Langer Lauf 32–42 km',        b:'7:00/km Trail-Charakter'},
+      1:{y:'rest',    a:'Ruhe',                         b:''},
+      2:{y:'medium',  a:'Mittellauf 14 km',             b:'6:20/km'},
+      3:{y:'tempo',   a:'Tempolauf 12 km',              b:'5:20/km'},
+      4:{y:'strength',a:'Kraft 60 min',                 b:'Oberkörper + Stabilität'},
+      5:{y:'easy',    a:'Locker 8 km',                  b:'6:45/km'},
+      6:{y:'strength',a:'Kraft 45 min + Trail 12 km',  b:'7:00/km'}}},
+  {id:6,name:'Phase 6 – Rennvorbereitung',col:'#fae8ff',tc:'#4a044e',start:'2027-02-15',end:'2027-04-19',km:'~70 km/Wo',
+   t:{0:{y:'long',    a:'Trail-Lauf 28–32 km',         b:'7:00/km + Höhenmeter'},
+      1:{y:'rest',    a:'Ruhe',                         b:''},
+      2:{y:'interval',a:'Intervall 10 km',              b:'3×3 km @ 5:00/km'},
+      3:{y:'medium',  a:'Mittellauf 14 km',             b:'6:15/km'},
+      4:{y:'strength',a:'Kraft 60 min',                 b:'Beine + Rumpf'},
+      5:{y:'easy',    a:'Locker 8 km',                  b:'6:45/km'},
+      6:{y:'strength',a:'Kraft 45 min + Trail 12 km',  b:'7:00/km'}}},
+  {id:7,name:'Phase 7 – Taper',       col:'#fdf4ff',tc:'#701a75',start:'2027-04-20',end:'2027-05-22',km:'↘ 50→30→15 km',
+   t:{0:{y:'taper',   a:'Taper-Lauf 18 km',            b:'7:00/km'},
+      1:{y:'rest',    a:'Ruhe',                         b:''},
+      2:{y:'taper',   a:'Locker 8 km',                  b:'7:00/km'},
+      3:{y:'taper',   a:'Locker 6 km',                  b:'7:00/km'},
+      4:{y:'strength',a:'Aktivierung 30 min',           b:'leicht'},
+      5:{y:'rest',    a:'Ruhe',                         b:''},
+      6:{y:'taper',   a:'Sehr locker 5 km',             b:'7:15/km'}}},
 ];
 
-// Special single-day overrides
 const SPECIALS = {
-  // Christmas break
-  '2026-12-24': { type: 'rest', text: 'Heiligabend 🎄', detail: '' },
-  '2026-12-25': { type: 'rest', text: 'Weihnachten 🎄', detail: '' },
-  '2026-12-26': { type: 'easy', text: 'Locker 8 km', detail: 'aktive Erholung' },
-  '2026-12-31': { type: 'easy', text: 'Jahresabschluss-Lauf 10 km', detail: '6:45/km' },
-  '2027-01-01': { type: 'rest', text: 'Neujahr 🎉', detail: '' },
-  // Big ultra training run
-  '2027-01-17': { type: 'long', text: '⭐ ULTRA-PROBE 50 km', detail: '7:00/km – wichtigster Trainingslauf!' },
+  '2026-12-24':{y:'rest',    a:'Heiligabend 🎄',            b:''},
+  '2026-12-25':{y:'rest',    a:'Weihnachten 🎄',            b:''},
+  '2026-12-26':{y:'easy',    a:'Locker 8 km',               b:'aktive Erholung'},
+  '2026-12-31':{y:'easy',    a:'Jahresabschluss 10 km',     b:'6:45/km'},
+  '2027-01-01':{y:'rest',    a:'Neujahr 🎉',                b:''},
+  '2027-01-17':{y:'long',    a:'⭐ ULTRA-PROBE 50 km',      b:'7:00/km – wichtigster Trainingslauf!'},
 };
 
-// ============================================================
-// LOGIC
-// ============================================================
+// ── HELPERS ──────────────────────────────────────────────────────────────
+function ds(d){return d.toISOString().slice(0,10);}
+function pd(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
+function getPhase(d){const s=ds(d);return PHASES.find(p=>s>=p.start&&s<=p.end)||null;}
+function isBB(d){if(d>BB_END)return false;const w=d.getDay();return w===1||w===3;}
+function dToRace(d){for(let i=1;i<=6;i++){const x=new Date(d);x.setDate(x.getDate()+i);if(raceMap.has(ds(x)))return i;}return null;}
+function dSinceRace(d){for(let i=1;i<=4;i++){const x=new Date(d);x.setDate(x.getDate()-i);if(raceMap.has(ds(x)))return i;}return null;}
 
-function dateStr(d) {
-  return d.toISOString().slice(0,10);
-}
-
-function parseDate(s) {
-  const [y,m,d] = s.split('-').map(Number);
-  return new Date(y, m-1, d);
-}
-
-function getPhase(d) {
-  const s = dateStr(d);
-  return PHASES.find(p => s >= p.start && s <= p.end) || null;
-}
-
-function isRaceWeekBefore(d) {
-  // Returns race if there's a race within next 1-6 days
-  for (let i = 1; i <= 6; i++) {
-    const dd = new Date(d); dd.setDate(dd.getDate() + i);
-    if (raceSet.has(dateStr(dd))) return raceSet.get(dateStr(dd));
+function getAct(d){
+  const s=ds(d);
+  if(SPECIALS[s])return SPECIALS[s];
+  if(raceMap.has(s)){const r=raceMap.get(s);return{y:'race',a:'🏆 '+r.name,b:r.dist+' · '+r.cup};}
+  if(dSinceRace(d))return{y:'recovery',a:'Regeneration',b:'leichte Bewegung oder Ruhe'};
+  const ph=getPhase(d);if(!ph)return null;
+  if(isBB(d))return{y:'baseball',a:'⚾ Baseball',b:'19–21 Uhr'};
+  let act=ph.t[d.getDay()]||null;
+  const dtr=dToRace(d);
+  if(dtr!==null){
+    if(dtr===1)return{y:'rest',a:'Ruhe',b:'Vorbereitung Rennen'};
+    if(dtr===2)return{y:'easy',a:'Locker 6 km',b:'Einlaufen für Rennen'};
+    if(dtr<=4&&act&&['long','interval','tempo'].includes(act.y))return{y:'easy',a:'Locker 8 km',b:'Taper-Woche'};
   }
-  return null;
-}
-
-function isRecoveryDay(d) {
-  // Returns true if there was a race in last 1-4 days
-  for (let i = 1; i <= 4; i++) {
-    const dd = new Date(d); dd.setDate(dd.getDate() - i);
-    if (raceSet.has(dateStr(dd))) return true;
-  }
-  return false;
-}
-
-function isBaseballDay(d) {
-  if (d < BASEBALL_START || d > BASEBALL_END) return false;
-  const dow = d.getDay();
-  return dow === 1 || dow === 3; // Mon or Wed
-}
-
-function getActivity(d) {
-  const s = dateStr(d);
-
-  // Special override
-  if (SPECIALS[s]) return SPECIALS[s];
-
-  // Race day
-  if (raceSet.has(s)) {
-    const r = raceSet.get(s);
-    return { type: 'race', text: '🏆 ' + r.name, detail: r.dist + ' · ' + r.cup };
-  }
-
-  // Recovery after race
-  if (isRecoveryDay(d)) {
-    return { type: 'recovery', text: 'Regeneration', detail: 'leichte Bewegung oder Ruhe' };
-  }
-
-  const phase = getPhase(d);
-  if (!phase) return null;
-
-  const dow = d.getDay();
-  let act = phase.template[dow] || null;
-
-  // Baseball override for Mon/Wed during season
-  if (isBaseballDay(d)) {
-    if (dow === 1) return { type: 'baseball', text: '⚾ Baseball', detail: '19–21 Uhr' };
-    if (dow === 3) return { type: 'baseball', text: '⚾ Baseball', detail: '19–21 Uhr' };
-  }
-
-  // Taper week: day before race (2 days before → easy, 1 day before → rest)
-  const raceAhead = isRaceWeekBefore(d);
-  if (raceAhead) {
-    // Find how many days to race
-    let daysToRace = 0;
-    for (let i=1; i<=6; i++) {
-      const dd = new Date(d); dd.setDate(dd.getDate()+i);
-      if (raceSet.has(dateStr(dd))) { daysToRace = i; break; }
-    }
-    if (daysToRace === 1) return { type: 'rest', text: 'Ruhe / Vorbereitung', detail: 'Ausrüstung checken' };
-    if (daysToRace === 2 && act && act.type !== 'rest') {
-      return { type: 'easy', text: 'Locker 6 km', detail: 'Einlaufen für Rennen' };
-    }
-    if (daysToRace <= 4 && act && (act.type === 'long' || act.type === 'interval' || act.type === 'tempo')) {
-      return { type: 'easy', text: 'Locker 8 km', detail: 'Taper-Woche' };
-    }
-  }
-
   return act;
 }
 
-// ============================================================
-// RENDER
-// ============================================================
+// ── iCAL ────────────────────────────────────────────────────────────────
+function p2(n){return String(n).padStart(2,'0');}
+function icsD(d){return`${d.getFullYear()}${p2(d.getMonth()+1)}${p2(d.getDate())}`;}
+function icsDT(d,h,m=0){return`${d.getFullYear()}${p2(d.getMonth()+1)}${p2(d.getDate())}T${p2(h)}${p2(m)}00`;}
+function esc(s){return s.replace(/,/g,'\\,').replace(/;/g,'\\;');}
 
-const MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
-const DOW_SHORT   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
-
-function renderMonth(year, month) {
-  const firstDay = new Date(year, month, 1);
-  const lastDay  = new Date(year, month+1, 0);
-  const startDow = (firstDay.getDay() + 6) % 7; // 0=Mon
-
-  // Determine dominant phase for this month
-  const midMonth = new Date(year, month, 15);
-  const phase = getPhase(midMonth);
-  const phaseName = phase ? phase.name : '';
-  const phaseColor = phase ? phase.color : '#eee';
-  const phaseKm = phase ? phase.kmWeek : '';
-
-  const today = new Date(); today.setHours(0,0,0,0);
-
-  let cells = [];
-
-  // Empty cells before first day
-  for (let i = 0; i < startDow; i++) {
-    cells.push('<div class="cal-cell empty"></div>');
-  }
-
-  // Day cells
-  for (let day = 1; day <= lastDay.getDate(); day++) {
-    const d = new Date(year, month, day);
-    const s = dateStr(d);
-    const dow = d.getDay(); // 0=Sun
-    const isSun = dow === 0;
-    const isToday = d.getTime() === today.getTime();
-
-    const act = getActivity(d);
-
-    let actHtml = '';
-    if (act) {
-      actHtml = `<div class="activity act-${act.type}">${act.text}${act.detail ? '<br><span style="opacity:0.75">' + act.detail + '</span>' : ''}</div>`;
+function makeIcs(){
+  const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Trainingsplan Rennsteiglauf 2027//DE',
+    'CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:Trainingsplan Rennsteiglauf 2027',
+    'X-WR-TIMEZONE:Europe/Berlin','X-APPLE-CALENDAR-COLOR:#6366F1'];
+  const s0=new Date(2026,5,1),s1=new Date(2027,4,23);
+  let uid=1;
+  for(let d=new Date(s0);d<=s1;d.setDate(d.getDate()+1)){
+    const act=getAct(new Date(d));
+    if(!act||act.y==='rest')continue;
+    const ds2=icsD(d),nd=new Date(d);nd.setDate(nd.getDate()+1);
+    if(act.y==='race'){
+      const r=raceMap.get(ds(d));const sh=r?r.sh:8;
+      L.push('BEGIN:VEVENT',`UID:race-${ds2}-${uid++}@tp2027`,
+        `DTSTART;TZID=Europe/Berlin:${icsDT(d,sh)}`,
+        `DTEND;TZID=Europe/Berlin:${icsDT(d,sh+4)}`,
+        `SUMMARY:${esc(act.a)}`,`DESCRIPTION:${esc(act.b)}`,
+        r?`URL:${r.url}`:'','CATEGORIES:Wettkampf','END:VEVENT');
+    } else if(act.y==='baseball'){
+      L.push('BEGIN:VEVENT',`UID:bb-${ds2}-${uid++}@tp2027`,
+        `DTSTART;TZID=Europe/Berlin:${icsDT(d,19)}`,
+        `DTEND;TZID=Europe/Berlin:${icsDT(d,21)}`,
+        'SUMMARY:⚾ Baseball Training','DESCRIPTION:19-21 Uhr','END:VEVENT');
+    } else {
+      const em={long:'🔵',tempo:'⚡',interval:'💥',medium:'🟢',easy:'🌿',strength:'💪',recovery:'💤',taper:'↘'}[act.y]||'🏃';
+      L.push('BEGIN:VEVENT',`UID:tr-${ds2}-${uid++}@tp2027`,
+        `DTSTART;VALUE=DATE:${ds2}`,`DTEND;VALUE=DATE:${icsD(nd)}`,
+        `SUMMARY:${em} ${esc(act.a)}`,`DESCRIPTION:${esc(act.b||'')}`,
+        'CATEGORIES:Training','END:VEVENT');
     }
+  }
+  L.push('END:VCALENDAR');
+  return L.filter(l=>l!=='').join('\r\n');
+}
 
-    cells.push(`<div class="cal-cell${isSun?' sunday':''}${isToday?' today':''}">
-      <div class="day-num">${day}</div>
-      ${actHtml}
-    </div>`);
+function dlIcs(){
+  const blob=new Blob([makeIcs()],{type:'text/calendar;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='Trainingsplan_Rennsteiglauf_2027.ics';a.click();
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────────
+const MN=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+
+function renderMonth(y,m){
+  const first=new Date(y,m,1),last=new Date(y,m+1,0);
+  const startDow=(first.getDay()+6)%7;
+  const today=new Date();today.setHours(0,0,0,0);
+  const mid=new Date(y,m,15),ph=getPhase(mid);
+  const racesM=RACES.filter(r=>{const d=pd(r.date);return d.getFullYear()===y&&d.getMonth()===m;});
+
+  let cells='';
+  for(let i=0;i<startDow;i++)cells+='<div class="dc empty"></div>';
+  for(let day=1;day<=last.getDate();day++){
+    const d=new Date(y,m,day),w=d.getDay(),isT=d.getTime()===today.getTime();
+    const act=getAct(d);
+    const chip=act?`<span class="chip ch-${act.y}">${act.a}${act.b?`<span class="det"><br>${act.b}</span>`:''}</span>`:'';
+    cells+=`<div class="dc${w===0?' sun':''}${isT?' tod':''}"><div class="dn">${day}</div>${chip}</div>`;
   }
 
-  // Week stats
-  const racesThisMonth = RACES.filter(r => {
-    const rd = parseDate(r.date);
-    return rd.getFullYear() === year && rd.getMonth() === month;
-  });
-  const raceInfo = racesThisMonth.length > 0
-    ? `<span style="color:#ffcdd2;font-size:0.7rem">🏁 ${racesThisMonth.map(r=>r.name.split(' ')[0]).join(', ')}</span>`
-    : `<span style="font-size:0.7rem;opacity:0.5">${phaseKm}</span>`;
-
-  return `
-  <div class="month-card">
-    <div class="month-header">
-      <div>
-        ${MONTH_NAMES[month]} ${year}
-        ${phaseName ? `<div class="phase-label" style="margin-top:4px;display:inline-block">${phaseName}</div>` : ''}
+  return`<div class="month-card">
+    <div class="month-head">
+      <div><div class="mname">${MN[m]} ${y}</div>${ph?`<div class="mphase">${ph.name}</div>`:''}</div>
+      <div class="mmeta">
+        <div class="mkm">${ph?ph.km:''}</div>
+        ${racesM.length?`<div class="mrace">🏁 ${racesM.map(r=>r.name.split(' ')[0]).join(', ')}</div>`:''}
       </div>
-      ${raceInfo}
     </div>
-    <div class="weekday-header">
-      ${['Mo','Di','Mi','Do','Fr','Sa','So'].map(d=>`<div>${d}</div>`).join('')}
-    </div>
-    <div class="cal-grid">
-      ${cells.join('')}
-    </div>
+    <div class="dow-row">${['Mo','Di','Mi','Do','Fr','Sa','So'].map(d=>`<div>${d}</div>`).join('')}</div>
+    <div class="cal-grid">${cells}</div>
   </div>`;
 }
 
-function render() {
-  const months = [
-    [2026, 5], [2026, 6], [2026, 7], [2026, 8], [2026, 9], [2026, 10],
-    [2026, 11], [2027, 0], [2027, 1], [2027, 2], [2027, 3], [2027, 4]
-  ];
+function init(){
+  // Countdown
+  const today=new Date();today.setHours(0,0,0,0);
+  const plan0=new Date(2026,5,1);
+  const total=(GOAL-plan0)/864e5,elapsed=Math.max(0,(today-plan0)/864e5);
+  const rem=Math.max(0,Math.ceil((GOAL-today)/864e5));
+  const pct=Math.min(100,Math.round(elapsed/total*100));
+  document.getElementById('cd').textContent=rem;
+  document.getElementById('pf').style.width=pct+'%';
+  document.getElementById('pp').textContent=pct+'% absolviert';
 
-  // Stats
-  const totalRuns = 8;
-  const totalKm = '~750 km';
+  // Phase strip
+  document.getElementById('ps').innerHTML=PHASES.map(p=>
+    `<span class="phase-pill" style="background:${p.col};color:${p.tc}">${p.name} · ${p.km}</span>`).join('');
 
-  const statsHtml = `
-  <div class="stats-bar">
-    <div class="stat"><div class="stat-num">12</div><div class="stat-label">Monate Vorbereitung</div></div>
-    <div class="stat"><div class="stat-num">8</div><div class="stat-label">Wettkämpfe</div></div>
-    <div class="stat"><div class="stat-num">${totalKm}</div><div class="stat-label">gepl. Laufkilometer</div></div>
-    <div class="stat"><div class="stat-num">7</div><div class="stat-label">ATRC Cup Rennen</div></div>
-    <div class="stat"><div class="stat-num">~75 km</div><div class="stat-label">Ziel: Rennsteiglauf</div></div>
-    <div class="stat"><div class="stat-num">~1.400 Hm</div><div class="stat-label">Höhenmeter Rennsteiglauf</div></div>
-  </div>`;
+  // Calendar
+  const months=[[2026,5],[2026,6],[2026,7],[2026,8],[2026,9],[2026,10],[2026,11],[2027,0],[2027,1],[2027,2],[2027,3],[2027,4]];
+  document.getElementById('cal').innerHTML=months.map(([y,m])=>renderMonth(y,m)).join('');
 
-  // Phase legend
-  const phasesHtml = `
-  <div class="phases-bar">
-    ${PHASES.map(p => `<span class="phase-badge" style="background:${p.color}">${p.name} · ${p.kmWeek}</span>`).join('')}
-  </div>`;
-
-  const calHtml = `<div class="calendar-grid">${months.map(([y,m]) => renderMonth(y,m)).join('')}</div>`;
-
-  // Race list
-  const raceListHtml = `
-  <div style="background:white;margin:0 32px 32px;border-radius:12px;padding:20px;box-shadow:0 1px 6px rgba(0,0,0,0.08)">
-    <h2 style="font-size:1rem;margin-bottom:12px;color:#1a237e">🏁 Wettkampfplan</h2>
-    <table style="width:100%;border-collapse:collapse;font-size:0.82rem">
-      <thead>
-        <tr style="background:#e8eaf6;color:#3949ab">
-          <th style="padding:6px 10px;text-align:left;border-radius:6px 0 0 6px">Datum</th>
-          <th style="padding:6px 10px;text-align:left">Rennen</th>
-          <th style="padding:6px 10px;text-align:left">Distanz</th>
-          <th style="padding:6px 10px;text-align:left;border-radius:0 6px 6px 0">Cup</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${RACES.map((r,i) => `
-          <tr style="background:${i===RACES.length-1?'#fff8e1':''}">
-            <td style="padding:7px 10px;border-bottom:1px solid #f0f0f0;font-weight:600;color:#555">${formatDate(r.date)}</td>
-            <td style="padding:7px 10px;border-bottom:1px solid #f0f0f0;font-weight:${i===RACES.length-1?'700':'400'};color:${i===RACES.length-1?'#b71c1c':'inherit'}">
-              <a href="${r.url}" target="_blank" style="color:inherit;text-decoration:none;border-bottom:1px dotted #aaa">${r.name}</a>
-            </td>
-            <td style="padding:7px 10px;border-bottom:1px solid #f0f0f0">${r.dist}</td>
-            <td style="padding:7px 10px;border-bottom:1px solid #f0f0f0;color:#888">${r.cup}</td>
-          </tr>`).join('')}
-      </tbody>
-    </table>
-  </div>`;
-
-  document.getElementById('app').innerHTML = statsHtml + phasesHtml + calHtml + raceListHtml;
+  // Race cards
+  document.getElementById('rl').innerHTML=RACES.map((r,i)=>{
+    const d=pd(r.date),isM=i===RACES.length-1;
+    return`<a class="rcard${isM?' main':''}" href="${r.url}" target="_blank">
+      <div class="rnum">${isM?'🏔':i+1}</div>
+      <div class="rinfo">
+        <h3>${r.name}</h3>
+        <div class="rmeta">📅 ${d.getDate()}. ${MN[d.getMonth()].slice(0,3)} ${d.getFullYear()} · 📏 ${r.dist}</div>
+        <div class="rcup">${r.cup}</div>
+      </div>
+    </a>`;
+  }).join('');
 }
 
-function formatDate(s) {
-  const d = parseDate(s);
-  return `${d.getDate()}. ${MONTH_NAMES[d.getMonth()].slice(0,3)} ${d.getFullYear()}`;
-}
-
-render();
+init();
 </script>
 </body>
 </html>
