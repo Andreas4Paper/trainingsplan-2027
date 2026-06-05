@@ -112,6 +112,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 .ch-easy    {background:#f7fee7;color:#3f6212;border-left-color:#84cc16;}
 .ch-strength{background:#faf5ff;color:#581c87;border-left-color:#a855f7;}
 .ch-baseball{background:#fefce8;color:#713f12;border-left-color:#eab308;}
+.ch-bbgame  {background:#fff7ed;color:#7c2d12;border-left-color:#ea580c;}
 .ch-recovery{background:#f0fdfa;color:#134e4a;border-left-color:#14b8a6;}
 .ch-taper   {background:#fdf4ff;color:#701a75;border-left-color:#c084fc;}
 .ch-rest    {display:none;}
@@ -408,6 +409,42 @@ const PLAN = {
   '2027-05-21':{y:'taper',   short:'5km locker',    full:'Taper 5 km',            detail:'7:00/km · Tag vor dem Rennen'},
 };
 
+// ─── BASEBALL ────────────────────────────────────────────────────────────
+// g=true → Spiel, g=false → Training
+const BB = {
+  // ── JUNI 2026 ──────────────────────────────────────────────────────────
+  '2026-06-08':{g:false,short:'19–21h',   full:'Baseball Training H1+H2',   detail:'Kirchderner Str. 35, Dortmund'},
+  '2026-06-11':{g:false,short:'19–21h',   full:'Baseball 1H Training',       detail:'Hahnenmühlenweg, Dortmund'},
+  '2026-06-13':{g:true, short:'13:30–16:30h',full:'Spiel: Marl Sly Dogs',  detail:'Otto-Hue-Str. 1, Marl'},
+  '2026-06-15':{g:false,short:'19–21h',   full:'Baseball Training H1+H2',   detail:'Kirchderner Str. 35, Dortmund'},
+  '2026-06-18':{g:false,short:'19–21h',   full:'Baseball 1H Training',       detail:'Hahnenmühlenweg, Dortmund'},
+  '2026-06-22':{g:false,short:'19–21h',   full:'Baseball Training H1+H2',   detail:'Kirchderner Str. 35, Dortmund'},
+  '2026-06-25':{g:false,short:'19–21h',   full:'Baseball 1H Training',       detail:'Hahnenmühlenweg, Dortmund'},
+  '2026-06-27':{g:true, short:'16:30–19:30h',full:'Spiel: Untouchables Paderborn',detail:'Ahornallee 20, Paderborn'},
+  '2026-06-28':{g:true, short:'11–14h',   full:'Spiel: Paderborn (2)',       detail:'Ahornallee 20, Paderborn'},
+  '2026-06-29':{g:false,short:'19–21h',   full:'Baseball Training H1+H2',   detail:'Kirchderner Str. 35, Dortmund'},
+  // ── JULI 2026 ──────────────────────────────────────────────────────────
+  '2026-07-02':{g:false,short:'19–21h',   full:'Baseball 1H Training',       detail:'Hahnenmühlenweg, Dortmund'},
+  '2026-07-06':{g:false,short:'19–21h',   full:'Baseball Training H1+H2',   detail:'Kirchderner Str. 35, Dortmund'},
+  '2026-07-09':{g:false,short:'19–21h',   full:'Baseball 1H Training',       detail:'Hahnenmühlenweg, Dortmund'},
+  '2026-07-12':{g:true, short:'13:30–16:30h',full:'Spiel: Bochum Barflys', detail:'Anemonenweg 16, Bochum'},
+  '2026-07-13':{g:false,short:'19–21h',   full:'Baseball Training H1+H2',   detail:'Kirchderner Str. 35, Dortmund'},
+  '2026-07-16':{g:false,short:'19–21h',   full:'Baseball 1H Training',       detail:'Hahnenmühlenweg, Dortmund'},
+  '2026-07-18':{g:true, short:'07:30–10:30h',full:'Spiel: Rheine Mavericks (Heim)',detail:'Kirchderner Str. 35-43, Dortmund'},
+  '2026-07-20':{g:false,short:'19–21h',   full:'Baseball Training H1+H2',   detail:'Kirchderner Str. 35, Dortmund'},
+  '2026-07-23':{g:false,short:'19–21h',   full:'Baseball 1H Training',       detail:'Hahnenmühlenweg, Dortmund'},
+  '2026-07-26':{g:true, short:'10:30–13:30h',full:'Spiel: Minden Millers (Heim)',detail:'Kirchderner Str. 35-43, Dortmund'},
+  '2026-07-27':{g:false,short:'19–21h',   full:'Baseball Training H1+H2',   detail:'Kirchderner Str. 35, Dortmund'},
+  '2026-07-30':{g:false,short:'19–21h',   full:'Baseball 1H Training',       detail:'Hahnenmühlenweg, Dortmund'},
+  // ── AUGUST 2026 ────────────────────────────────────────────────────────
+  '2026-08-03':{g:false,short:'19–21h',   full:'Baseball Training H1+H2',   detail:'Kirchderner Str. 35, Dortmund'},
+  '2026-08-06':{g:false,short:'19–21h',   full:'Baseball 1H Training',       detail:'Hahnenmühlenweg, Dortmund'},
+  '2026-08-10':{g:false,short:'19–21h',   full:'Baseball Training H1+H2',   detail:'Kirchderner Str. 35, Dortmund'},
+  '2026-08-13':{g:false,short:'19–21h',   full:'Baseball 1H Training',       detail:'Hahnenmühlenweg, Dortmund'},
+  '2026-08-17':{g:false,short:'19–21h',   full:'Baseball Training H1+H2',   detail:'Kirchderner Str. 35, Dortmund'},
+  '2026-08-20':{g:false,short:'19–21h',   full:'Baseball 1H Training',       detail:'Hahnenmühlenweg, Dortmund'},
+};
+
 function fillWeek(start, end, tmpl){
   for(let d=new Date(start); d<=end; d.setDate(d.getDate()+1)){
     const s=ds(d);
@@ -484,12 +521,12 @@ function applyFilter(){
   if(clr) clr.classList.toggle('visible', activeFilters.size > 0);
   // Apply dim to calendar cells
   document.querySelectorAll('.dc[data-type]').forEach(cell=>{
-    const t = cell.dataset.type;
-    if(activeFilters.size === 0 || activeFilters.has(t)){
-      cell.classList.remove('dc-dim');
-    } else {
-      cell.classList.add('dc-dim');
-    }
+    const t   = cell.dataset.type;
+    const hasBb = cell.dataset.bb === '1';
+    const matches = activeFilters.size === 0
+      || activeFilters.has(t)
+      || (hasBb && activeFilters.has('baseball'));
+    cell.classList.toggle('dc-dim', !matches);
   });
 }
 
@@ -617,11 +654,6 @@ function makeIcs(useCustom=true){
         `SUMMARY:${esc('🏆 Rennen: '+(r?r.name:act.full))}`,
         `DESCRIPTION:${esc(act.detail||'')}`,
         r?`URL:${r.url}`:'','CATEGORIES:Wettkampf','END:VEVENT');
-    } else if(act.y==='baseball'){
-      L.push('BEGIN:VEVENT',`UID:bb-${ds2}-${uid++}@tp2027`,
-        `DTSTART;TZID=Europe/Berlin:${icsDT(d,19)}`,
-        `DTEND;TZID=Europe/Berlin:${icsDT(d,21)}`,
-        'SUMMARY:⚾ Baseball Training','DESCRIPTION:19–21 Uhr','END:VEVENT');
     } else {
       const summary = summaryPrefix + esc(act.short||act.full);
       L.push('BEGIN:VEVENT',`UID:tr-${ds2}-${uid++}@tp2027`,
@@ -629,6 +661,26 @@ function makeIcs(useCustom=true){
         `SUMMARY:${summary}`,`DESCRIPTION:${esc(act.detail||'')}`,
         'CATEGORIES:Training','END:VEVENT');
     }
+  }
+  // Baseball-Termine aus BB-Map hinzufügen
+  for(const [dateStr, bb] of Object.entries(BB)){
+    const d=pd(dateStr), ds2=icsD(d);
+    // Startzeit aus short parsen (z.B. "19–21h" → 19, "13:30–16:30h" → 13)
+    const timeMatch = bb.short.match(/^(\d+)(?::(\d+))?/);
+    const sh = timeMatch ? parseInt(timeMatch[1]) : 19;
+    const sm = timeMatch && timeMatch[2] ? parseInt(timeMatch[2]) : 0;
+    const endMatch = bb.short.match(/–(\d+)(?::(\d+))?h/);
+    const eh = endMatch ? parseInt(endMatch[1]) : sh+2;
+    const em2 = endMatch && endMatch[2] ? parseInt(endMatch[2]) : 0;
+    const dtStart = d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate())+'T'+p2(sh)+p2(sm)+'00';
+    const dtEnd   = d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate())+'T'+p2(eh)+p2(em2)+'00';
+    const emoji = bb.g ? '⚾🏟' : '⚾';
+    L.push('BEGIN:VEVENT',`UID:bb-${ds2}-${uid++}@tp2027`,
+      `DTSTART;TZID=Europe/Berlin:${dtStart}`,
+      `DTEND;TZID=Europe/Berlin:${dtEnd}`,
+      `SUMMARY:${esc(emoji+' '+(bb.g?'Spiel: ':'')+bb.full.replace('Baseball ','').replace('Spiel: ',''))}`,
+      `DESCRIPTION:${esc(bb.detail)}`,
+      'CATEGORIES:Baseball','END:VEVENT');
   }
   L.push('END:VCALENDAR');
   return L.filter(l=>l!=='').join('\r\n');
@@ -666,6 +718,15 @@ function chipHtml(dateStr, act, isModified){
   ><span class="chip-l1">${l1}</span>${l2?`<span class="chip-l2">${l2}</span>`:''}</span>`;
 }
 
+function bbChipHtml(dateStr, bb){
+  const label = bb.g ? '⚾ Spiel' : '⚾ Training';
+  const act = {y:'baseball', full:bb.full, detail:bb.detail, short:bb.short};
+  const safeAct = JSON.stringify(act).replace(/'/g,'&apos;').replace(/"/g,'&quot;');
+  return `<span class="chip ch-baseball${bb.g?' ch-bbgame':''}" style="margin-top:2px"
+    onclick="showPopup('${dateStr}',${safeAct})"
+  ><span class="chip-l1">${label}</span><span class="chip-l2">${bb.short}</span></span>`;
+}
+
 function renderMonth(y, m){
   const first=new Date(y,m,1), last=new Date(y,m+1,0);
   const startDow=(first.getDay()+6)%7;
@@ -679,13 +740,15 @@ function renderMonth(y, m){
     const d=new Date(y,m,day), s=ds(d);
     const dow=d.getDay(), isT=d.getTime()===today.getTime();
     const act=getAct(d), isMod=custom[s]!==undefined;
-    const actType = act ? act.y : 'rest';
-    const dimCls = (activeFilters.size>0 && !activeFilters.has(actType)) ? ' dc-dim' : '';
-    cells+=`<div class="dc${dow===0?' sun':''}${isT?' tod':''}${dimCls}" data-type="${actType}"
+    const bb=BB[s]||null;
+    const actType = act ? act.y : (bb ? 'baseball' : 'rest');
+    const hasBb = bb ? 1 : 0;
+    const dimCls = (activeFilters.size>0 && !activeFilters.has(actType) && !(hasBb && activeFilters.has('baseball'))) ? ' dc-dim' : '';
+    cells+=`<div class="dc${dow===0?' sun':''}${isT?' tod':''}${dimCls}" data-type="${actType}" data-bb="${hasBb}"
       ondragover="onDragOver(event,this)"
       ondragleave="onDragLeave(event,this)"
       ondrop="onDrop(event,'${s}',this)"
-    ><div class="dn">${day}</div>${chipHtml(s,act,isMod)}</div>`;
+    ><div class="dn">${day}</div>${chipHtml(s,act,isMod)}${bb?bbChipHtml(s,bb):''}</div>`;
   }
 
   return `<div class="month-card">
