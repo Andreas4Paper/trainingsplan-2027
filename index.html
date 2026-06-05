@@ -45,9 +45,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 .btn-outline:hover{border-color:var(--indigo);color:var(--indigo);}
 
 /* LEGEND */
-.legend{padding:12px 36px;background:#fff;border-bottom:1px solid var(--g200);display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.legend{padding:10px 36px;background:#fff;border-bottom:1px solid var(--g200);display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
 .leg-t{font-size:.65rem;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;margin-right:4px;}
-.leg-chip{padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:700;color:#fff;}
+.leg-chip{padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:700;color:#fff;cursor:pointer;transition:opacity .15s,transform .15s,box-shadow .15s;user-select:none;}
+.leg-chip:hover{opacity:.85;transform:scale(1.06);}
+.leg-chip.leg-active{box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(0,0,0,.5);transform:scale(1.06);}
+.leg-chip.leg-inactive{opacity:.28;}
+.leg-clear{padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:700;cursor:pointer;background:var(--g100);color:var(--g600);border:1px solid var(--g200);transition:all .15s;display:none;}
+.leg-clear:hover{background:var(--g200);}
+.leg-clear.visible{display:inline-flex;align-items:center;gap:4px;}
 
 /* PHASES */
 .phase-strip{padding:10px 36px;background:var(--g50);border-bottom:1px solid var(--g200);display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;}
@@ -64,19 +70,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 .mmeta{text-align:right;}
 .mkm{font-size:.65rem;color:rgba(255,255,255,.4);}
 .mrace{font-size:.6rem;background:rgba(239,68,68,.3);color:#fca5a5;padding:2px 8px;border-radius:10px;display:inline-block;margin-top:3px;}
-.dow-row{display:grid;grid-template-columns:repeat(7,1fr);background:var(--g50);border-bottom:1px solid var(--g100);}
-.dow-row div{text-align:center;font-size:.58rem;font-weight:800;color:var(--g400);padding:5px 2px;text-transform:uppercase;letter-spacing:.4px;}
+.dow-row{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));background:var(--g50);border-bottom:1px solid var(--g100);}
+.dow-row div{text-align:center;font-size:.58rem;font-weight:800;color:var(--g400);padding:5px 2px;text-transform:uppercase;letter-spacing:.4px;overflow:hidden;}
 .dow-row div:last-child{color:#ef4444;}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));}
 
 /* DAY CELL */
-.dc{min-height:72px;padding:4px 3px;border-right:1px solid var(--g100);border-bottom:1px solid var(--g100);position:relative;transition:background .15s;}
+.dc{min-height:72px;padding:4px 3px;border-right:1px solid var(--g100);border-bottom:1px solid var(--g100);position:relative;transition:background .15s,opacity .2s;min-width:0;overflow:hidden;}
 .dc:nth-child(7n){border-right:none;}
 .dc.empty{background:var(--g50);}
 .dc.sun .dn{color:#ef4444;}
 .dc.tod{background:#fef9c3;}
 .dc.tod .dn{background:var(--indigo);color:#fff;border-radius:50%;width:17px;height:17px;display:flex;align-items:center;justify-content:center;font-size:.58rem;}
 .dc.drag-over{background:#e0e7ff !important;outline:2px dashed var(--indigo);outline-offset:-2px;}
+.dc.dc-dim{opacity:.12;pointer-events:none;}
+.dc.dc-dim .chip{pointer-events:none;}
 .dn{font-size:.62rem;font-weight:700;color:var(--g400);margin-bottom:3px;line-height:17px;}
 
 /* CHIP */
@@ -85,7 +93,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
   line-height:1.3;display:block;cursor:pointer;
   transition:opacity .12s,transform .12s,box-shadow .12s;
   border-left:2px solid transparent;position:relative;
-  user-select:none;
+  user-select:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  min-width:0;max-width:100%;
 }
 .chip:hover{opacity:.85;transform:scale(1.03);box-shadow:0 2px 6px rgba(0,0,0,.15);}
 .chip.dragging{opacity:.35;}
@@ -183,17 +192,18 @@ footer{background:var(--navy2);color:rgba(255,255,255,.35);text-align:center;pad
 </div>
 
 <div class="legend">
-  <span class="leg-t">Legende</span>
-  <span class="leg-chip" style="background:#ef4444">🏆 Rennen</span>
-  <span class="leg-chip" style="background:#3b82f6">🔵 Langer Lauf</span>
-  <span class="leg-chip" style="background:#f97316">⚡ Tempo</span>
-  <span class="leg-chip" style="background:#ec4899">💥 Intervall</span>
-  <span class="leg-chip" style="background:#22c55e">🟢 Mittellauf</span>
-  <span class="leg-chip" style="background:#84cc16">🌿 Locker</span>
-  <span class="leg-chip" style="background:#a855f7">💪 Kraft</span>
-  <span class="leg-chip" style="background:#eab308">⚾ Baseball</span>
-  <span class="leg-chip" style="background:#14b8a6">💤 Regen.</span>
-  <span class="leg-chip" style="background:#c084fc">↘ Taper</span>
+  <span class="leg-t">Filter</span>
+  <span class="leg-chip" data-type="race"     style="background:#ef4444" onclick="toggleFilter('race')"    >🏆 Rennen</span>
+  <span class="leg-chip" data-type="long"     style="background:#3b82f6" onclick="toggleFilter('long')"    >🔵 Langer Lauf</span>
+  <span class="leg-chip" data-type="tempo"    style="background:#f97316" onclick="toggleFilter('tempo')"   >⚡ Tempo</span>
+  <span class="leg-chip" data-type="interval" style="background:#ec4899" onclick="toggleFilter('interval')">💥 Intervall</span>
+  <span class="leg-chip" data-type="medium"   style="background:#22c55e" onclick="toggleFilter('medium')"  >🟢 Mittellauf</span>
+  <span class="leg-chip" data-type="easy"     style="background:#84cc16" onclick="toggleFilter('easy')"    >🌿 Locker</span>
+  <span class="leg-chip" data-type="strength" style="background:#a855f7" onclick="toggleFilter('strength')">💪 Kraft</span>
+  <span class="leg-chip" data-type="baseball" style="background:#eab308" onclick="toggleFilter('baseball')">⚾ Baseball</span>
+  <span class="leg-chip" data-type="recovery" style="background:#14b8a6" onclick="toggleFilter('recovery')">💤 Regen.</span>
+  <span class="leg-chip" data-type="taper"    style="background:#c084fc" onclick="toggleFilter('taper')"   >↘ Taper</span>
+  <span class="leg-clear" id="leg-clear" onclick="clearFilter()">✕ Filter zurücksetzen</span>
 </div>
 
 <div class="phase-strip" id="ps"></div>
@@ -331,8 +341,48 @@ const SPECIALS = {
 let custom = {};
 try { custom = JSON.parse(localStorage.getItem('tp2027') || '{}'); } catch(e){}
 
-let popupDate = null;
-let dragData  = null;
+let popupDate    = null;
+let dragData     = null;
+let activeFilters = new Set();
+
+function toggleFilter(type){
+  if(activeFilters.has(type)) activeFilters.delete(type);
+  else activeFilters.add(type);
+  applyFilter();
+}
+
+function clearFilter(){
+  activeFilters.clear();
+  applyFilter();
+}
+
+function applyFilter(){
+  // Update legend chips visual state
+  document.querySelectorAll('.leg-chip[data-type]').forEach(el=>{
+    const t = el.dataset.type;
+    if(activeFilters.size === 0){
+      el.classList.remove('leg-active','leg-inactive');
+    } else if(activeFilters.has(t)){
+      el.classList.add('leg-active');
+      el.classList.remove('leg-inactive');
+    } else {
+      el.classList.add('leg-inactive');
+      el.classList.remove('leg-active');
+    }
+  });
+  // Show/hide clear button
+  const clr = document.getElementById('leg-clear');
+  if(clr) clr.classList.toggle('visible', activeFilters.size > 0);
+  // Apply dim to calendar cells
+  document.querySelectorAll('.dc[data-type]').forEach(cell=>{
+    const t = cell.dataset.type;
+    if(activeFilters.size === 0 || activeFilters.has(t)){
+      cell.classList.remove('dc-dim');
+    } else {
+      cell.classList.add('dc-dim');
+    }
+  });
+}
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────
 function ds(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
@@ -525,7 +575,9 @@ function renderMonth(y, m){
     const d=new Date(y,m,day), s=ds(d);
     const dow=d.getDay(), isT=d.getTime()===today.getTime();
     const act=getAct(d), isMod=custom[s]!==undefined;
-    cells+=`<div class="dc${dow===0?' sun':''}${isT?' tod':''}"
+    const actType = act ? act.y : 'rest';
+    const dimCls = (activeFilters.size>0 && !activeFilters.has(actType)) ? ' dc-dim' : '';
+    cells+=`<div class="dc${dow===0?' sun':''}${isT?' tod':''}${dimCls}" data-type="${actType}"
       ondragover="onDragOver(event,this)"
       ondragleave="onDragLeave(event,this)"
       ondrop="onDrop(event,'${s}',this)"
