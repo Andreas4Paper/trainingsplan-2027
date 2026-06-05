@@ -337,7 +337,7 @@ const SPECIALS = {
 };
 
 // ── HELPERS ──────────────────────────────────────────────────────────────
-function ds(d){return d.toISOString().slice(0,10);}
+function ds(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function pd(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
 function getPhase(d){const s=ds(d);return PHASES.find(p=>s>=p.start&&s<=p.end)||null;}
 function isBB(d){if(d>BB_END)return false;const w=d.getDay();return w===1||w===3;}
