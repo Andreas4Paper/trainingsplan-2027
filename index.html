@@ -76,7 +76,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 .cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));}
 
 /* DAY CELL */
-.dc{min-height:72px;padding:4px 3px;border-right:1px solid var(--g100);border-bottom:1px solid var(--g100);position:relative;transition:background .15s,opacity .2s;min-width:0;overflow:hidden;}
+.dc{min-height:80px;padding:4px 3px;border-right:1px solid var(--g100);border-bottom:1px solid var(--g100);position:relative;transition:background .15s,opacity .2s;min-width:0;overflow:hidden;}
 .dc:nth-child(7n){border-right:none;}
 .dc.empty{background:var(--g50);}
 .dc.sun .dn{color:#ef4444;}
@@ -90,17 +90,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 /* CHIP */
 .chip{
   border-radius:5px;padding:3px 5px;font-size:.6rem;font-weight:700;
-  line-height:1.3;display:block;cursor:pointer;
+  line-height:1.25;display:block;cursor:pointer;
   transition:opacity .12s,transform .12s,box-shadow .12s;
   border-left:2px solid transparent;position:relative;
-  user-select:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  min-width:0;max-width:100%;
+  user-select:none;overflow:hidden;min-width:0;max-width:100%;
 }
 .chip:hover{opacity:.85;transform:scale(1.03);box-shadow:0 2px 6px rgba(0,0,0,.15);}
 .chip.dragging{opacity:.35;}
 .chip[draggable=true]{cursor:grab;}
 .chip[draggable=true]:active{cursor:grabbing;}
 .chip-modified::after{content:'✎';position:absolute;top:1px;right:2px;font-size:.5rem;opacity:.5;}
+.chip-l1{display:block;font-size:.63rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.chip-l2{display:block;font-size:.56rem;font-weight:600;opacity:.72;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
 /* CHIP COLORS */
 .ch-race    {background:#fef2f2;color:#991b1b;border-left-color:#ef4444;}
@@ -555,11 +556,21 @@ function chipHtml(dateStr, act, isModified){
   if(!act||act.y==='rest') return '';
   const c=CFG[act.y]||CFG.rest;
   const mod=isModified?' chip-modified':'';
+  // Line 1: emoji + type label
+  let l1 = c.em ? c.em+' '+c.label : c.label;
+  // Line 2: key metrics (distance, pace, duration…)
+  let l2 = act.short || '';
+  // For races: show shortened race name as line 2
+  if(act.y==='race' && act._race){
+    const words = act._race.name.split(' ');
+    l2 = (words.slice(0,2).join(' '))+' · '+act._race.dist;
+  }
+  const safeAct = JSON.stringify(act).replace(/'/g,'&apos;').replace(/"/g,'&quot;');
   return `<span class="chip ch-${act.y}${mod}" draggable="true"
-    onclick="showPopup('${dateStr}',${JSON.stringify(act).replace(/'/g,'&apos;').replace(/"/g,'&quot;')})"
+    onclick="showPopup('${dateStr}',${safeAct})"
     ondragstart="onDragStart(event,'${dateStr}')"
     ondragend="onDragEnd(event)"
-  >${c.em} ${act.short||act.full}</span>`;
+  ><span class="chip-l1">${l1}</span>${l2?`<span class="chip-l2">${l2}</span>`:''}</span>`;
 }
 
 function renderMonth(y, m){
