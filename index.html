@@ -776,61 +776,88 @@ function showToast(msg){
 // ─── iCAL ────────────────────────────────────────────────────────────────
 function p2(n){ return String(n).padStart(2,'0'); }
 function icsD(d){ return d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate()); }
-function icsDT(d,h){ return d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate())+'T'+p2(h)+'0000'; }
+function icsDT(d,h,m=0){ return d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate())+'T'+p2(h)+p2(m)+'00'; }
 function esc(s){ return (s||'').replace(/,/g,'\\,').replace(/;/g,'\\;'); }
+
+function buildIcsSummary(act){
+  // Sauberer Titel ohne redundante Label-Wiederholung
+  const sh = act.short||'';
+  switch(act.y){
+    case 'race':     { const r=act._race; return '🏆 '+(r?r.name+' · '+r.dist:act.full.replace(/🏆\s*/,'')); }
+    case 'easy':     return '🌿 '+sh;
+    case 'recovery': return '💤 '+sh;
+    case 'long':     return '🔵 Long Run '+sh;
+    case 'tempo':    return '⚡ Tempo '+sh;
+    case 'interval': return '💥 '+sh;
+    case 'medium':   return '🟢 GA1 '+sh;
+    case 'strength': return (act.full.includes('Ober')?'💪 Oberkörper':'🦵 Unterkörper')+' · '+sh;
+    case 'taper':    return '↘ '+sh;
+    default:         return (CFG[act.y]?CFG[act.y].em+' ':'')+sh;
+  }
+}
 
 function makeIcs(useCustom=true){
   const L=[
     'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Trainingsplan Rennsteiglauf 2027//DE',
     'CALSCALE:GREGORIAN','METHOD:PUBLISH',
-    'X-WR-CALNAME:🏔 Rennsteiglauf 2027 Training',
+    'X-WR-CALNAME:🏔 Rennsteiglauf 2027',
     'X-WR-TIMEZONE:Europe/Berlin','X-APPLE-CALENDAR-COLOR:#6366F1',
   ];
   const s0=new Date(2026,5,1), s1=new Date(2027,4,23);
   let uid=1;
+
+  // ── Laufeinheiten ──────────────────────────────────────────────────────
   for(let d=new Date(s0);d<=s1;d.setDate(d.getDate()+1)){
     const act = useCustom ? getAct(new Date(d)) : defaultAct(new Date(d));
     if(!act||act.y==='rest') continue;
     const ds2=icsD(d), nd=new Date(d); nd.setDate(nd.getDate()+1);
-    const c=CFG[act.y]||CFG.rest;
-    const summaryPrefix = c.em ? c.em+' '+c.label+': ' : '';
     if(act.y==='race'){
       const r=act._race||raceMap.get(ds(d));
       const sh=r?r.sh:8;
       L.push('BEGIN:VEVENT',`UID:race-${ds2}-${uid++}@tp2027`,
         `DTSTART;TZID=Europe/Berlin:${icsDT(d,sh)}`,
         `DTEND;TZID=Europe/Berlin:${icsDT(d,sh+4)}`,
-        `SUMMARY:${esc('🏆 Rennen: '+(r?r.name:act.full))}`,
+        `SUMMARY:${esc(buildIcsSummary(act))}`,
         `DESCRIPTION:${esc(act.detail||'')}`,
-        r?`URL:${r.url}`:'','CATEGORIES:Wettkampf','END:VEVENT');
+        r&&r.url?`URL:${r.url}`:'',
+        'CATEGORIES:Wettkampf','END:VEVENT');
     } else {
-      const summary = summaryPrefix + esc(act.short||act.full);
       L.push('BEGIN:VEVENT',`UID:tr-${ds2}-${uid++}@tp2027`,
         `DTSTART;VALUE=DATE:${ds2}`,`DTEND;VALUE=DATE:${icsD(nd)}`,
-        `SUMMARY:${summary}`,`DESCRIPTION:${esc(act.detail||'')}`,
+        `SUMMARY:${esc(buildIcsSummary(act))}`,
+        `DESCRIPTION:${esc(act.detail||'')}`,
         'CATEGORIES:Training','END:VEVENT');
     }
   }
-  // Baseball-Termine aus BB-Map hinzufügen
+
+  // ── Krafttraining ──────────────────────────────────────────────────────
+  for(const [dateStr, st] of Object.entries(STR)){
+    const d=pd(dateStr), ds2=icsD(d), nd=new Date(d); nd.setDate(nd.getDate()+1);
+    L.push('BEGIN:VEVENT',`UID:str-${ds2}-${uid++}@tp2027`,
+      `DTSTART;VALUE=DATE:${ds2}`,`DTEND;VALUE=DATE:${icsD(nd)}`,
+      `SUMMARY:${esc((st.type==='upper'?'💪 Oberkörper':'🦵 Unterkörper')+' · '+st.short)}`,
+      `DESCRIPTION:${esc(st.detail)}`,
+      'CATEGORIES:Krafttraining','END:VEVENT');
+  }
+
+  // ── Baseball ───────────────────────────────────────────────────────────
   for(const [dateStr, bb] of Object.entries(BB)){
     const d=pd(dateStr), ds2=icsD(d);
-    // Startzeit aus short parsen (z.B. "19–21h" → 19, "13:30–16:30h" → 13)
-    const timeMatch = bb.short.match(/^(\d+)(?::(\d+))?/);
-    const sh = timeMatch ? parseInt(timeMatch[1]) : 19;
-    const sm = timeMatch && timeMatch[2] ? parseInt(timeMatch[2]) : 0;
-    const endMatch = bb.short.match(/–(\d+)(?::(\d+))?h/);
-    const eh = endMatch ? parseInt(endMatch[1]) : sh+2;
-    const em2 = endMatch && endMatch[2] ? parseInt(endMatch[2]) : 0;
-    const dtStart = d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate())+'T'+p2(sh)+p2(sm)+'00';
-    const dtEnd   = d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate())+'T'+p2(eh)+p2(em2)+'00';
-    const emoji = bb.g ? '⚾🏟' : '⚾';
+    const tm=bb.short.match(/^(\d+)(?::(\d+))?/);
+    const sh=tm?parseInt(tm[1]):19, sm=tm&&tm[2]?parseInt(tm[2]):0;
+    const em2=bb.short.match(/–(\d+)(?::(\d+))?h/);
+    const eh=em2?parseInt(em2[1]):sh+2, emin=em2&&em2[2]?parseInt(em2[2]):0;
+    const sum = bb.g
+      ? '⚾🏟 Spiel: '+bb.full.replace(/^Spiel:\s*/,'')
+      : '⚾ Baseball · '+bb.short;
     L.push('BEGIN:VEVENT',`UID:bb-${ds2}-${uid++}@tp2027`,
-      `DTSTART;TZID=Europe/Berlin:${dtStart}`,
-      `DTEND;TZID=Europe/Berlin:${dtEnd}`,
-      `SUMMARY:${esc(emoji+' '+(bb.g?'Spiel: ':'')+bb.full.replace('Baseball ','').replace('Spiel: ',''))}`,
+      `DTSTART;TZID=Europe/Berlin:${icsDT(d,sh,sm)}`,
+      `DTEND;TZID=Europe/Berlin:${icsDT(d,eh,emin)}`,
+      `SUMMARY:${esc(sum)}`,
       `DESCRIPTION:${esc(bb.detail)}`,
       'CATEGORIES:Baseball','END:VEVENT');
   }
+
   L.push('END:VCALENDAR');
   return L.filter(l=>l!=='').join('\r\n');
 }
