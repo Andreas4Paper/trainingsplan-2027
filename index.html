@@ -61,7 +61,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 .phase-pill{white-space:nowrap;padding:4px 12px;border-radius:20px;font-size:.65rem;font-weight:700;border:1px solid rgba(0,0,0,.08);flex-shrink:0;}
 
 /* CALENDAR */
-.cal-wrap{padding:24px 36px;display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px;}
+.cal-wrap{padding:24px 36px;display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
 .month-card{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05),0 6px 20px rgba(0,0,0,.04);transition:box-shadow .2s,transform .2s;}
 .month-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.09),0 20px 50px rgba(0,0,0,.06);transform:translateY(-2px);}
 .month-head{background:linear-gradient(135deg,var(--navy) 0%,#1e1b4b 100%);padding:14px 16px;display:flex;justify-content:space-between;align-items:flex-start;}
@@ -153,6 +153,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 
 footer{background:var(--navy2);color:rgba(255,255,255,.35);text-align:center;padding:20px;font-size:.72rem;}
 
+@media(max-width:780px){
+  .cal-wrap{grid-template-columns:1fr;}
+}
 @media(max-width:640px){
   .hero{padding:32px 18px 28px;}.hero h1{font-size:1.5rem;}
   .prog-bar,.sub-bar,.legend,.phase-strip{padding:10px 18px;}
