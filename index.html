@@ -873,19 +873,19 @@ function dlIcs(){
 // ─── RENDER ──────────────────────────────────────────────────────────────
 const MN=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 
+function splitSummary(text){
+  // Teile bei ' · ' oder ' @ ' → 2-zeiliger Chip
+  const di = text.indexOf(' · ');
+  if(di>0) return [text.slice(0,di), text.slice(di+3)];
+  const ai = text.indexOf(' @ ');
+  if(ai>0) return [text.slice(0,ai), '@ '+text.slice(ai+3)];
+  return [text, ''];
+}
+
 function chipHtml(dateStr, act, isModified){
   if(!act||act.y==='rest') return '';
-  const c=CFG[act.y]||CFG.rest;
   const mod=isModified?' chip-modified':'';
-  // Line 1: emoji + type label
-  let l1 = c.em ? c.em+' '+c.label : c.label;
-  // Line 2: key metrics (distance, pace, duration…)
-  let l2 = act.short || '';
-  // For races: show shortened race name as line 2
-  if(act.y==='race' && act._race){
-    const words = act._race.name.split(' ');
-    l2 = (words.slice(0,2).join(' '))+' · '+act._race.dist;
-  }
+  const [l1,l2] = splitSummary(buildIcsSummary(act));
   const safeAct = JSON.stringify(act).replace(/'/g,'&apos;').replace(/"/g,'&quot;');
   return `<span class="chip ch-${act.y}${mod}" draggable="true"
     onclick="showPopup('${dateStr}',${safeAct})"
@@ -895,12 +895,12 @@ function chipHtml(dateStr, act, isModified){
 }
 
 function strChipHtml(dateStr, st){
-  const isUp = st.type==='upper';
   const act = {y:'strength', full:st.full, detail:st.detail, short:st.short};
+  const [l1,l2] = splitSummary((st.type==='upper'?'💪 Oberkörper':'🦵 Unterkörper')+' · '+st.short);
   const safeAct = JSON.stringify(act).replace(/'/g,'&apos;').replace(/"/g,'&quot;');
   return `<span class="chip ch-strength" style="margin-top:2px"
     onclick="showPopup('${dateStr}',${safeAct})"
-  ><span class="chip-l1">${isUp?'💪 Oberkörper':'🦵 Unterkörper'}</span><span class="chip-l2">${st.short}</span></span>`;
+  ><span class="chip-l1">${l1}</span>${l2?`<span class="chip-l2">${l2}</span>`:''}</span>`;
 }
 
 function noteChipsHtml(dateStr){
@@ -912,12 +912,15 @@ function noteChipsHtml(dateStr){
 }
 
 function bbChipHtml(dateStr, bb){
-  const label = bb.g ? '⚾ Spiel' : '⚾ Training';
+  const sum = bb.g
+    ? '⚾🏟 Spiel: '+bb.full.replace(/^Spiel:\s*/,'')
+    : '⚾ Baseball · '+bb.short;
+  const [l1,l2] = splitSummary(sum);
   const act = {y:'baseball', full:bb.full, detail:bb.detail, short:bb.short};
   const safeAct = JSON.stringify(act).replace(/'/g,'&apos;').replace(/"/g,'&quot;');
   return `<span class="chip ch-baseball${bb.g?' ch-bbgame':''}" style="margin-top:2px"
     onclick="showPopup('${dateStr}',${safeAct})"
-  ><span class="chip-l1">${label}</span><span class="chip-l2">${bb.short}</span></span>`;
+  ><span class="chip-l1">${l1}</span>${l2?`<span class="chip-l2">${l2}</span>`:''}</span>`;
 }
 
 function renderMonth(y, m){
