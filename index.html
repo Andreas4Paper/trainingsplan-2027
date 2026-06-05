@@ -271,75 +271,180 @@ const TIPS = {
 const GOAL = new Date(2027,4,22);
 
 const RACES = [
-  {date:'2026-08-30',name:'Grafschaftslauf Rietberg',      dist:'28,5 km',  cup:'ATRC #1', url:'https://www.grafschaftslauf.de/web/', sh:7},
-  {date:'2026-09-13',name:'City Move – Tag des Sportes',   dist:'10 km',    cup:'ATRC #2', url:'https://www.bielefeld.jetzt/run',      sh:9},
-  {date:'2026-09-26',name:'Böckstiegellauf Werther',       dist:'18 km',    cup:'ATRC #3', url:'https://www.boeckstiegellauf.de',      sh:9},
-  {date:'2026-10-25',name:'DJK Halbmarathon Gütersloh',    dist:'21,1 km',  cup:'ATRC #4', url:'https://www.djkguetersloh.de',         sh:9},
-  {date:'2026-12-13',name:'Weihnachts-Crosslauf',          dist:'16 km',    cup:'ATRC #5', url:'https://www.lcsolbad.de',              sh:10},
-  {date:'2027-03-07',name:'Luisenturmlauf Borgholzhausen', dist:'21,1 km',  cup:'ATRC #6', url:'https://www.lcsolbad.de',              sh:10},
-  {date:'2027-04-25',name:'Hermannslauf Detmold–Bielefeld',dist:'31,1 km',  cup:'ATRC #7 🔥', url:'https://www.hermannslauf.de',      sh:9},
-  {date:'2027-05-22',name:'RENNSTEIGLAUF SUPERMARATHON',   dist:'~75 km',   cup:'🏆 HAUPTZIEL', url:'https://www.rennsteiglauf.de',   sh:7},
+  {date:'2026-08-30',name:'Grafschaftslauf Rietberg',      dist:'28,5 km', cup:'ATRC #1',    url:'https://www.grafschaftslauf.de/web/', sh:7},
+  {date:'2026-09-06',name:'Bochum Halbmarathon',           dist:'21,1 km', cup:'Rennen',     url:'',                                   sh:9},
+  {date:'2026-09-09',name:'B2Run Köln',                    dist:'5 km',    cup:'Rennen',     url:'',                                   sh:19},
+  {date:'2026-09-13',name:'City Move Bielefeld',           dist:'10 km',   cup:'ATRC #2',    url:'https://www.bielefeld.jetzt/run',    sh:9},
+  {date:'2026-09-26',name:'Böckstiegellauf Werther',       dist:'18 km',   cup:'ATRC #3',    url:'https://www.boeckstiegellauf.de',    sh:9},
+  {date:'2026-10-25',name:'DJK Halbmarathon Gütersloh',    dist:'21,1 km', cup:'ATRC #4',    url:'https://www.djkguetersloh.de',       sh:9},
+  {date:'2026-12-13',name:'Weihnachts-Crosslauf',          dist:'16 km',   cup:'ATRC #5',    url:'https://www.lcsolbad.de',            sh:10},
+  {date:'2027-03-07',name:'Luisenturmlauf Borgholzhausen', dist:'21,1 km', cup:'ATRC #6',    url:'https://www.lcsolbad.de',            sh:10},
+  {date:'2027-04-25',name:'Hermannslauf Detmold–Bielefeld',dist:'31,1 km', cup:'ATRC #7 🔥', url:'https://www.hermannslauf.de',        sh:9},
+  {date:'2027-05-22',name:'RENNSTEIGLAUF SUPERMARATHON',   dist:'73,9 km', cup:'🏆 HAUPTZIEL',url:'https://www.rennsteiglauf.de',    sh:7},
 ];
 const raceMap = new Map(RACES.map(r=>[r.date,r]));
 
-const BB_END = new Date(2026,8,14); // Baseball BIS 14. Sep 2026
-
+// Anzeigeblöcke für Monatsköpfe
 const PHASES = [
-  {id:1,name:'Phase 1 – Grundlage',col:'#dcfce7',tc:'#14532d',start:'2026-06-01',end:'2026-07-19',km:'~45 km/Wo',
-   t:{0:{y:'long',    short:'18km · 7:00',full:'Langer Lauf 18 km',  detail:'7:00/km'},
-      2:{y:'easy',    short:'8km · 6:45', full:'Locker 8 km',         detail:'6:45/km'},
-      3:{y:'medium',  short:'12km · 6:30',full:'Mittellauf 12 km',    detail:'6:30/km'},
-      4:{y:'strength',short:'Kraft 60\'', full:'Krafttraining 60 min',detail:'Rumpf + Beine'},
-      6:{y:'strength',short:'Kraft + 6km',full:'Kraft 45 min + 6 km', detail:'6:45/km'}}},
-  {id:2,name:'Phase 2 – Aufbau I',col:'#dbeafe',tc:'#1e3a8a',start:'2026-07-20',end:'2026-08-23',km:'~54 km/Wo',
-   t:{0:{y:'long',    short:'22km · 6:45',full:'Langer Lauf 22 km',  detail:'6:45/km'},
-      2:{y:'tempo',   short:'10km · 5:30',full:'Tempolauf 10 km',     detail:'5:30/km'},
-      3:{y:'medium',  short:'14km · 6:20',full:'Mittellauf 14 km',    detail:'6:20/km'},
-      4:{y:'strength',short:'Kraft 60\'', full:'Krafttraining 60 min',detail:'Rumpf + Beine'},
-      6:{y:'strength',short:'Kraft + 8km',full:'Kraft 45 min + 8 km', detail:'6:45/km'}}},
-  {id:3,name:'Phase 3 – Aufbau II',col:'#fef9c3',tc:'#713f12',start:'2026-08-24',end:'2026-10-11',km:'~56 km/Wo',
-   t:{0:{y:'long',    short:'24km · 6:45',   full:'Langer Lauf 24 km',    detail:'6:45/km'},
-      2:{y:'interval',short:'4×2km @ 5:00',  full:'Intervall 4×2 km',     detail:'@ 5:00/km'},
-      3:{y:'medium',  short:'14km · 6:20',   full:'Mittellauf 14 km',      detail:'6:20/km'},
-      4:{y:'strength',short:'Kraft + 14km',  full:'Kraft 60\' + Mittel 14 km',detail:'6:20/km'},
-      5:{y:'easy',    short:'8km · 6:45',    full:'Locker 8 km',           detail:'6:45/km'},
-      6:{y:'strength',short:'Kraft 45\'',    full:'Krafttraining 45 min',  detail:''}}},
-  {id:4,name:'Phase 4 – Aufbau III',col:'#ffedd5',tc:'#7c2d12',start:'2026-10-12',end:'2026-12-13',km:'~62 km/Wo',
-   t:{0:{y:'long',    short:'30km · 6:30',   full:'Langer Lauf 28–32 km',  detail:'6:30/km Trail'},
-      2:{y:'tempo',   short:'12km · 5:20',   full:'Tempolauf 12 km',        detail:'5:20/km'},
-      3:{y:'medium',  short:'14km · 6:20',   full:'Mittellauf 14 km',       detail:'6:20/km'},
-      4:{y:'strength',short:'Kraft + 12km',  full:'Kraft 60\' + Mittel 12 km',detail:'6:20/km'},
-      6:{y:'strength',short:'Kraft + 8km',   full:'Kraft 45\' + Easy 8 km',  detail:'6:45/km'}}},
-  {id:5,name:'Phase 5 – Ultra-Peak',col:'#e0e7ff',tc:'#312e81',start:'2026-12-14',end:'2027-02-14',km:'~72 km/Wo',
-   t:{0:{y:'long',    short:'35km · 7:00',   full:'Langer Lauf 32–42 km',  detail:'7:00/km, Trail'},
-      2:{y:'medium',  short:'14km · 6:20',   full:'Mittellauf 14 km',       detail:'6:20/km'},
-      3:{y:'tempo',   short:'12km · 5:20',   full:'Tempolauf 12 km',        detail:'5:20/km'},
-      4:{y:'strength',short:'Kraft 60\'',    full:'Krafttraining 60 min',   detail:'Stabilität'},
-      5:{y:'easy',    short:'8km · 6:45',    full:'Locker 8 km',            detail:'6:45/km'},
-      6:{y:'strength',short:'Kraft + Trail', full:'Kraft 45\' + Trail 12 km',detail:'7:00/km'}}},
-  {id:6,name:'Phase 6 – Rennvorbereitung',col:'#fae8ff',tc:'#4a044e',start:'2027-02-15',end:'2027-04-19',km:'~70 km/Wo',
-   t:{0:{y:'long',    short:'30km Trail',    full:'Trail-Lauf 28–32 km',   detail:'7:00/km + Hm'},
-      2:{y:'interval',short:'3×3km @ 5:00', full:'Intervall 3×3 km',       detail:'@ 5:00/km'},
-      3:{y:'medium',  short:'14km · 6:15',  full:'Mittellauf 14 km',        detail:'6:15/km'},
-      4:{y:'strength',short:'Kraft 60\'',   full:'Krafttraining 60 min',    detail:'Beine + Rumpf'},
-      5:{y:'easy',    short:'8km · 6:45',   full:'Locker 8 km',             detail:'6:45/km'},
-      6:{y:'strength',short:'Kraft + Trail',full:'Kraft 45\' + Trail 12 km',detail:'7:00/km'}}},
-  {id:7,name:'Phase 7 – Taper',col:'#fdf4ff',tc:'#701a75',start:'2027-04-20',end:'2027-05-22',km:'↘ 50→15 km',
-   t:{0:{y:'taper',   short:'18km · 7:00',  full:'Taper-Lauf 18 km',       detail:'7:00/km'},
-      2:{y:'taper',   short:'8km locker',   full:'Locker 8 km',             detail:'7:00/km'},
-      3:{y:'taper',   short:'6km locker',   full:'Locker 6 km',             detail:'7:00/km'},
-      4:{y:'strength',short:'Aktiv 30\'',   full:'Aktivierung 30 min',      detail:'leicht'},
-      6:{y:'taper',   short:'5km sehr lok.',full:'Sehr locker 5 km',        detail:'7:15/km'}}},
+  {name:'Grundlage + Aufbau', col:'#dbeafe',tc:'#1e3a8a',start:'2026-06-01',end:'2026-08-26'},
+  {name:'Wettkampfblock',     col:'#fef9c3',tc:'#713f12',start:'2026-08-27',end:'2026-10-26'},
+  {name:'Winterblock',        col:'#dcfce7',tc:'#14532d',start:'2026-10-27',end:'2027-02-28'},
+  {name:'Frühjahr',           col:'#e0e7ff',tc:'#312e81',start:'2027-03-01',end:'2027-04-24'},
+  {name:'Final Block / Taper',col:'#fdf4ff',tc:'#701a75',start:'2027-04-25',end:'2027-05-22'},
 ];
 
-const SPECIALS = {
-  '2026-12-24':{y:'rest',    short:'',             full:'Heiligabend 🎄',         detail:''},
-  '2026-12-25':{y:'rest',    short:'',             full:'Weihnachten 🎄',         detail:''},
-  '2026-12-26':{y:'easy',    short:'8km locker',   full:'Locker 8 km',            detail:'aktive Erholung'},
-  '2026-12-31':{y:'easy',    short:'10km',         full:'Jahresabschluss 10 km',  detail:'6:45/km'},
-  '2027-01-01':{y:'rest',    short:'',             full:'Neujahr 🎉',             detail:''},
-  '2027-01-17':{y:'long',    short:'⭐ 50km!',     full:'ULTRA-PROBE 50 km',      detail:'7:00/km – wichtigster Trainingslauf!'},
+// Spezifischer Trainingsplan – alle Einzeltermine
+const PLAN = {
+  // ── PHASE 1: GRUNDLAGE + AUFBAU (05.06 – 26.08.2026) ──────────────────
+  // Woche 05.06 – 11.06
+  '2026-06-06':{y:'easy',    short:'8km · 6:20',    full:'Locker 8 km',           detail:'6:15–6:30/km · Regeneration'},
+  '2026-06-08':{y:'medium',  short:'10km · 6:10',   full:'GA1 10 km',             detail:'6:00–6:20/km'},
+  '2026-06-10':{y:'interval',short:'6×800m @ 4:40', full:'Intervalle 6×800m',     detail:'@ 4:40/km'},
+  '2026-06-11':{y:'long',    short:'14km · 6:15',   full:'Long Run 14 km',        detail:'6:15/km'},
+  // Woche 12.06 – 18.06
+  '2026-06-12':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
+  '2026-06-14':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
+  '2026-06-16':{y:'tempo',   short:'8km · 5:35',    full:'Tempodauerlauf 8 km',   detail:'5:35/km'},
+  '2026-06-18':{y:'long',    short:'16km · 6:20',   full:'Long Run 16 km',        detail:'6:20/km'},
+  // Woche 19.06 – 25.06
+  '2026-06-19':{y:'easy',    short:'10km locker',   full:'Locker 10 km',          detail:''},
+  '2026-06-21':{y:'interval',short:'5×1km @ 4:40',  full:'Intervalle 5×1.000m',   detail:'@ 4:40/km'},
+  '2026-06-23':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
+  '2026-06-25':{y:'long',    short:'18km · 6:20',   full:'Long Run 18 km',        detail:'6:20/km'},
+  // Woche 26.06 – 02.07
+  '2026-06-26':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
+  '2026-06-28':{y:'tempo',   short:'10km · 5:35',   full:'Tempodauerlauf 10 km',  detail:'5:35/km'},
+  '2026-06-30':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
+  '2026-07-02':{y:'long',    short:'20km · 6:20',   full:'Long Run 20 km',        detail:'6:20/km'},
+  // Woche 03.07 – 09.07
+  '2026-07-03':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
+  '2026-07-05':{y:'interval',short:'6×1km @ 4:40',  full:'Intervalle 6×1.000m',   detail:'@ 4:40/km'},
+  '2026-07-07':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
+  '2026-07-09':{y:'long',    short:'22km · 6:20',   full:'Long Run 22 km',        detail:'6:20/km'},
+  // Woche 10.07 – 16.07
+  '2026-07-10':{y:'easy',    short:'10km locker',   full:'Locker 10 km',          detail:''},
+  '2026-07-12':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
+  '2026-07-14':{y:'tempo',   short:'10km · 5:30',   full:'Tempodauerlauf 10 km',  detail:'5:30/km'},
+  '2026-07-16':{y:'long',    short:'24km · 6:20',   full:'Long Run 24 km',        detail:'6:20/km'},
+  // Woche 17.07 – 23.07
+  '2026-07-17':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
+  '2026-07-19':{y:'interval',short:'5×1,2km @ 4:40',full:'Intervalle 5×1.200m',   detail:'@ 4:40/km'},
+  '2026-07-21':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
+  '2026-07-23':{y:'long',    short:'26km · 6:20',   full:'Long Run 26 km',        detail:'6:20/km'},
+  // Woche 24.07 – 30.07 (Entlastung)
+  '2026-07-24':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
+  '2026-07-26':{y:'easy',    short:'10km locker',   full:'Locker 10 km',          detail:''},
+  '2026-07-28':{y:'tempo',   short:'8km · 5:35',    full:'Tempodauerlauf 8 km',   detail:'5:35/km'},
+  '2026-07-30':{y:'long',    short:'20km · 6:30',   full:'Long Run 20 km',        detail:'6:30/km · Entlastung'},
+  // Woche 31.07 – 06.08
+  '2026-07-31':{y:'easy',    short:'10km locker',   full:'Locker 10 km',          detail:''},
+  '2026-08-02':{y:'interval',short:'6×1km @ 4:40',  full:'Intervalle 6×1.000m',   detail:'@ 4:40/km'},
+  '2026-08-04':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
+  '2026-08-06':{y:'long',    short:'24km · 6:20',   full:'Long Run 24 km',        detail:'6:20/km'},
+  // Woche 07.08 – 13.08
+  '2026-08-07':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
+  '2026-08-09':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
+  '2026-08-11':{y:'tempo',   short:'10km · 5:30',   full:'Tempodauerlauf 10 km',  detail:'5:30/km'},
+  '2026-08-13':{y:'long',    short:'26km · 6:20',   full:'Long Run 26 km',        detail:'6:20/km'},
+  // Woche 14.08 – 20.08
+  '2026-08-14':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
+  '2026-08-16':{y:'interval',short:'5×1km @ 4:40',  full:'Intervalle 5×1.000m',   detail:'@ 4:40/km'},
+  '2026-08-18':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
+  '2026-08-20':{y:'long',    short:'22km · 6:20',   full:'Long Run 22 km',        detail:'6:20/km'},
+  // Woche 21.08 – 27.08 (Taper vor Grafschaftslauf)
+  '2026-08-21':{y:'taper',   short:'8km locker',    full:'Taper 8 km',            detail:'Taper'},
+  '2026-08-23':{y:'taper',   short:'6km locker',    full:'Taper 6 km',            detail:'Taper'},
+  '2026-08-25':{y:'taper',   short:'5km locker',    full:'Taper 5 km',            detail:'Taper'},
+  '2026-08-27':{y:'taper',   short:'12km locker',   full:'Taper 12 km',           detail:'Taper'},
+  // ── WETTKAMPFBLOCK SEPTEMBER 2026 ──────────────────────────────────────
+  // 30.08: Grafschaftslauf → RACES
+  '2026-09-01':{y:'recovery',short:'6km Regen.',    full:'Locker 6 km',           detail:'Regeneration nach Rennen'},
+  '2026-09-03':{y:'recovery',short:'8km Regen.',    full:'Locker 8 km',           detail:'Regeneration'},
+  '2026-09-05':{y:'easy',    short:'4km locker',    full:'Locker 4 km',           detail:'Einlaufen vor Rennen'},
+  // 06.09: Bochum HM → RACES
+  '2026-09-08':{y:'recovery',short:'5km Regen.',    full:'Locker 5 km',           detail:'Regeneration'},
+  // 09.09: B2Run Köln → RACES
+  '2026-09-10':{y:'recovery',short:'6km Regen.',    full:'Locker 6 km',           detail:'Regeneration'},
+  // 13.09: City Move → RACES
+  '2026-09-15':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:'Regeneration'},
+  '2026-09-17':{y:'medium',  short:'10km · 6:10',   full:'GA1 10 km',             detail:'6:10/km'},
+  '2026-09-19':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
+  // 26.09: Böckstiegellauf → RACES
+  '2026-09-29':{y:'recovery',short:'8km Regen.',    full:'Locker 8 km',           detail:'Regeneration nach Rennen'},
+  '2026-10-01':{y:'medium',  short:'10km · 6:10',   full:'GA1 10 km',             detail:'6:10/km'},
+  '2026-10-03':{y:'long',    short:'12km · 6:20',   full:'Long Run 12 km',        detail:'6:20/km'},
+  // Woche 04.10 – 24.10 → generatedet (fillWeek)
+  // 25.10: DJK HM → RACES
+  // ── WINTERBLOCK Nov 2026 – Feb 2027 → generiert (fillWeek) ────────────
+  // Schlüsselläufe
+  '2027-01-17':{y:'long',    short:'⭐ 35km · 7:00', full:'Long Run 35 km',        detail:'7:00/km – Schlüssellauf Januar'},
+  '2027-02-07':{y:'long',    short:'⭐ 40km · 7:00', full:'Long Run 40 km',        detail:'7:00/km – Schlüssellauf Februar'},
+  // Feiertage
+  '2026-12-24':{y:'rest',    short:'',              full:'Heiligabend 🎄',         detail:''},
+  '2026-12-25':{y:'rest',    short:'',              full:'Weihnachten 🎄',         detail:''},
+  '2026-12-31':{y:'easy',    short:'10km',          full:'Jahresabschluss 10 km',  detail:'6:45/km'},
+  '2027-01-01':{y:'rest',    short:'',              full:'Neujahr 🎉',             detail:''},
+  // ── FRÜHJAHR 2027 ─────────────────────────────────────────────────────
+  // März → generiert nach Luisenturmlauf (07.03)
+  // Bergintervalle (Sonntage März)
+  '2027-03-14':{y:'interval',short:'8×3min Berg',   full:'Bergintervalle 8×3 min', detail:'Hügel, Puls Zone 4–5'},
+  '2027-03-28':{y:'interval',short:'10×3min Berg',  full:'Bergintervalle 10×3 min',detail:'Hügel, Puls Zone 4–5'},
+  // April Schlüsselläufe
+  '2027-04-05':{y:'long',    short:'32km · 7:00',   full:'Long Run 32 km',        detail:'7:00/km'},
+  '2027-04-12':{y:'long',    short:'33km · 7:00',   full:'Long Run 33 km',        detail:'7:00/km'},
+  // 25.04: Hermannslauf → RACES
+  // ── FINAL BLOCK ───────────────────────────────────────────────────────
+  '2027-04-27':{y:'recovery',short:'8km Regen.',    full:'Locker 8 km',           detail:'Regeneration nach Hermannslauf'},
+  '2027-04-28':{y:'recovery',short:'6km Regen.',    full:'Locker 6 km',           detail:'Regeneration'},
+  '2027-04-30':{y:'recovery',short:'8km locker',    full:'Locker 8 km',           detail:'Regeneration'},
+  '2027-05-02':{y:'easy',    short:'10km locker',   full:'Locker 10 km',          detail:''},
+  '2027-05-03':{y:'long',    short:'⭐ 45km · 6:30', full:'Long Run 45 km',        detail:'6:20–6:40/km – Hauptprobe!'},
+  '2027-05-08':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
+  '2027-05-10':{y:'long',    short:'25km · 6:30',   full:'Long Run 25 km',        detail:'6:30/km'},
+  '2027-05-13':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
+  '2027-05-15':{y:'taper',   short:'15km locker',   full:'Taper 15 km',           detail:'6:30/km'},
+  '2027-05-17':{y:'taper',   short:'10km locker',   full:'Taper 10 km',           detail:'6:45/km'},
+  '2027-05-19':{y:'taper',   short:'6km locker',    full:'Taper 6 km',            detail:'7:00/km'},
+  '2027-05-21':{y:'taper',   short:'5km locker',    full:'Taper 5 km',            detail:'7:00/km · Tag vor dem Rennen'},
 };
+
+function fillWeek(start, end, tmpl){
+  for(let d=new Date(start); d<=end; d.setDate(d.getDate()+1)){
+    const s=ds(d);
+    if(PLAN[s]||raceMap.has(s)) continue;
+    const act=tmpl[d.getDay()];
+    if(act) PLAN[s]={...act};
+  }
+}
+
+function buildPlan(){
+  // Okt 04–24: 2× Tempo + Long Run
+  fillWeek(new Date(2026,9,4), new Date(2026,9,24), {
+    2:{y:'tempo', short:'9km · 5:35',  full:'Tempodauerlauf 9 km',  detail:'5:30–5:40/km'},
+    5:{y:'tempo', short:'8km · 5:40',  full:'Tempodauerlauf 8 km',  detail:'5:30–5:40/km'},
+    0:{y:'long',  short:'22km · 6:20', full:'Long Run 22 km',       detail:'6:20/km'},
+  });
+  // Winterblock Di/Do/Sa/So
+  fillWeek(new Date(2026,10,1), new Date(2027,1,28), {
+    2:{y:'easy',  short:'12km locker', full:'Locker 12 km',          detail:'6:30/km'},
+    4:{y:'tempo', short:'10km · 5:35', full:'Tempodauerlauf 10 km',  detail:'5:30–5:40/km'},
+    6:{y:'easy',  short:'10km locker', full:'Locker 10 km',          detail:'6:30/km'},
+    0:{y:'long',  short:'26km · 6:45', full:'Long Run 26 km',        detail:'6:30–7:00/km'},
+  });
+  // März (nach Luisenturmlauf 07.03): Di/Do/Sa/So
+  fillWeek(new Date(2027,2,8), new Date(2027,2,31), {
+    2:{y:'easy',  short:'12km locker', full:'Locker 12 km',          detail:'6:30/km'},
+    4:{y:'tempo', short:'10km · 5:30', full:'Tempo 10 km',           detail:'5:30/km'},
+    6:{y:'easy',  short:'10km locker', full:'Locker 10 km',          detail:'6:30/km'},
+    0:{y:'long',  short:'30km · 7:00', full:'Long Run 30 km',        detail:'7:00/km'},
+  });
+  // April 1–24: Di/Do/Sa
+  fillWeek(new Date(2027,3,1), new Date(2027,3,24), {
+    2:{y:'easy',  short:'12km locker', full:'Locker 12 km',          detail:'6:30/km'},
+    4:{y:'tempo', short:'10km · 5:30', full:'Tempo 10 km',           detail:'5:30/km'},
+    6:{y:'easy',  short:'10km locker', full:'Locker 10 km',          detail:'6:30/km'},
+  });
+}
 
 // ─── STATE ───────────────────────────────────────────────────────────────
 let custom = {};
@@ -393,29 +498,14 @@ function ds(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'
 function pd(s){ const[y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
 function fmt(d){ return `${d.getDate()}. ${MN[d.getMonth()]} ${d.getFullYear()}`; }
 function getPhase(d){ const s=ds(d); return PHASES.find(p=>s>=p.start&&s<=p.end)||null; }
-function isBB(d){ if(d>BB_END)return false; const w=d.getDay(); return w===1||w===3; }
-function dToRace(d){ for(let i=1;i<=6;i++){const x=new Date(d);x.setDate(x.getDate()+i);if(raceMap.has(ds(x)))return i;} return null; }
-function dSinceRace(d){ for(let i=1;i<=4;i++){const x=new Date(d);x.setDate(x.getDate()-i);if(raceMap.has(ds(x)))return i;} return null; }
 
 function defaultAct(d){
   const s=ds(d);
-  if(SPECIALS[s]) return {...SPECIALS[s], _spec:true};
   if(raceMap.has(s)){
     const r=raceMap.get(s);
     return {y:'race', short:r.dist, full:'🏆 '+r.name, detail:r.dist+' · '+r.cup, _race:r};
   }
-  if(dSinceRace(d)) return {y:'recovery', short:'Regen.', full:'Regeneration', detail:'leichte Bewegung oder Ruhe'};
-  const ph=getPhase(d); if(!ph) return null;
-  if(isBB(d)) return {y:'baseball', short:'⚾ 19–21h', full:'Baseball Training', detail:'19–21 Uhr'};
-  let act = ph.t[d.getDay()] ? {...ph.t[d.getDay()]} : {y:'rest', short:'', full:'Ruhe', detail:''};
-  const dtr=dToRace(d);
-  if(dtr!==null){
-    if(dtr===1) return {y:'rest', short:'', full:'Ruhe', detail:'Vorbereitung Rennen'};
-    if(dtr===2) return {y:'easy', short:'6km ein', full:'Locker 6 km', detail:'Einlaufen für Rennen'};
-    if(dtr<=4 && act && ['long','interval','tempo'].includes(act.y))
-      return {y:'easy', short:'8km Taper', full:'Locker 8 km', detail:'Taper-Woche'};
-  }
-  return act;
+  return PLAN[s] ? {...PLAN[s]} : null;
 }
 
 function getAct(d){
@@ -602,7 +692,6 @@ function renderMonth(y, m){
     <div class="month-head">
       <div><div class="mname">${MN[m]} ${y}</div>${ph?`<div class="mphase">${ph.name}</div>`:''}</div>
       <div class="mmeta">
-        <div class="mkm">${ph?ph.km:''}</div>
         ${racesM.length?`<div class="mrace">🏁 ${racesM.map(r=>r.name.split(' ')[0]).join(', ')}</div>`:''}
       </div>
     </div>
@@ -625,9 +714,12 @@ function init(){
   document.getElementById('pf').style.width=Math.min(100,Math.round(elapsed/total*100))+'%';
   document.getElementById('pp').textContent=Math.min(100,Math.round(elapsed/total*100))+'% absolviert';
 
+  // Build plan (generated weekly patterns)
+  buildPlan();
+
   // Phase strip
   document.getElementById('ps').innerHTML=PHASES.map(p=>
-    `<span class="phase-pill" style="background:${p.col};color:${p.tc}">${p.name} · ${p.km}</span>`).join('');
+    `<span class="phase-pill" style="background:${p.col};color:${p.tc}">${p.name}</span>`).join('');
 
   // Race cards
   document.getElementById('rl').innerHTML=RACES.map((r,i)=>{
