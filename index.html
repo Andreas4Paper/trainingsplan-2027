@@ -116,6 +116,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 .ch-recovery{background:#f0fdfa;color:#134e4a;border-left-color:#14b8a6;}
 .ch-taper   {background:#fdf4ff;color:#701a75;border-left-color:#c084fc;}
 .ch-rest    {display:none;}
+.ch-note    {background:#f5f3ff;color:#4c1d95;border-left-color:#8b5cf6;}
+
+/* ADD BUTTON */
+.dc-add{position:absolute;bottom:3px;right:3px;width:16px;height:16px;border-radius:50%;background:var(--g100);color:var(--g400);font-size:.75rem;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .12s,background .12s;line-height:1;padding:0;font-weight:700;}
+.dc:hover .dc-add{opacity:1;}
+.dc-add:hover{background:var(--indigo);color:#fff;}
+
+/* NOTE MODAL */
+.note-input{width:100%;border:1.5px solid var(--g200);border-radius:9px;padding:9px 12px;font-size:.82rem;margin-bottom:8px;outline:none;font-family:inherit;}
+.note-input:focus{border-color:var(--indigo);}
+.note-textarea{width:100%;border:1.5px solid var(--g200);border-radius:9px;padding:9px 12px;font-size:.78rem;resize:vertical;outline:none;margin-bottom:10px;font-family:inherit;min-height:56px;}
+.note-textarea:focus{border-color:var(--indigo);}
+.note-colors{display:flex;gap:8px;margin-bottom:16px;align-items:center;}
+.note-colors label{font-size:.68rem;color:var(--g400);font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+.nc{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:transform .12s,border-color .12s;flex-shrink:0;}
+.nc:hover{transform:scale(1.2);}
+.nc.active{border-color:var(--navy);transform:scale(1.25);}
 
 /* POPUP */
 .overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(2px);}
@@ -220,6 +237,29 @@ footer{background:var(--navy2);color:rgba(255,255,255,.35);text-align:center;pad
 </div>
 
 <footer>Trainingsplan Rennsteiglauf 2027 · Andreas Hanrath · Einträge per Drag & Drop verschiebbar</footer>
+
+<!-- NOTE MODAL -->
+<div class="overlay hidden" id="note-overlay" onclick="closeNoteModal(event)">
+  <div class="popup" id="note-popup">
+    <button class="popup-close" onclick="hideNoteModal()">×</button>
+    <div class="popup-title" id="np-title">📝 Eintrag hinzufügen</div>
+    <div class="popup-date" id="np-date"></div>
+    <input id="np-text" type="text" class="note-input" placeholder="Titel (z.B. Arzttermin, Meeting…)" maxlength="40">
+    <textarea id="np-detail" class="note-textarea" placeholder="Details (optional)…" maxlength="120"></textarea>
+    <div class="note-colors">
+      <label>Farbe</label>
+      <span class="nc active" data-c="#6366f1" style="background:#6366f1" onclick="selectColor('#6366f1')"></span>
+      <span class="nc" data-c="#ef4444" style="background:#ef4444" onclick="selectColor('#ef4444')"></span>
+      <span class="nc" data-c="#22c55e" style="background:#22c55e" onclick="selectColor('#22c55e')"></span>
+      <span class="nc" data-c="#f59e0b" style="background:#f59e0b" onclick="selectColor('#f59e0b')"></span>
+      <span class="nc" data-c="#64748b" style="background:#64748b" onclick="selectColor('#64748b')"></span>
+    </div>
+    <div class="popup-actions">
+      <button class="btn btn-primary" onclick="saveNote()">Speichern</button>
+      <button class="popup-reset" id="np-delete" onclick="deleteNote()" style="display:none">🗑 Löschen</button>
+    </div>
+  </div>
+</div>
 
 <!-- POPUP -->
 <div class="overlay hidden" id="overlay" onclick="closePopup(event)">
@@ -483,12 +523,58 @@ function buildPlan(){
   });
 }
 
+// ─── KRAFT ───────────────────────────────────────────────────────────────
+const STR = {};
+
+function buildStrength(){
+  let toggle = 0; // 0 = Oberkörper, 1 = Unterkörper
+  const end = new Date(2027,3,20); // bis 20. April, danach Taper
+  // Wochen (Montag-basiert)
+  const planStart = new Date(2026,5,2); // 2. Jun = erster Montag ab Planstart
+  const firstMon = new Date(planStart);
+  const adj = (planStart.getDay()+6)%7;
+  firstMon.setDate(firstMon.getDate()-adj);
+
+  for(let ws=new Date(firstMon); ws<=end; ws.setDate(ws.getDate()+7)){
+    const cands=[];
+    for(let i=0;i<7;i++){
+      const d=new Date(ws); d.setDate(d.getDate()+i);
+      const s=ds(d);
+      if(raceMap.has(s)) continue;
+      const act=PLAN[s];
+      if(!act||act.y!=='easy') continue;
+      const bb=BB[s];
+      // Spiel-Tage meiden; Baseball-Training ok (früher Lauf + abends BB + Kraft = viel, aber möglich)
+      if(bb&&bb.g) continue;
+      cands.push({s, hasBb:!!bb});
+    }
+    cands.sort((a,b)=>(a.hasBb?1:0)-(b.hasBb?1:0));
+    for(const {s} of cands.slice(0,2)){
+      const up=toggle%2===0;
+      STR[s]={
+        type: up?'upper':'lower',
+        short:'30–45 min',
+        full: up?'Kraft Oberkörper':'Kraft Unterkörper',
+        detail: up
+          ?'Liegestütze · Rudern · Schultern · Core (3×12)'
+          :'Squats · Lunges · Deadlift · Wadenheben (3×12)',
+      };
+      toggle++;
+    }
+  }
+}
+
 // ─── STATE ───────────────────────────────────────────────────────────────
 let custom = {};
 try { custom = JSON.parse(localStorage.getItem('tp2027') || '{}'); } catch(e){}
+let customNotes = {};
+try { customNotes = JSON.parse(localStorage.getItem('tp2027notes') || '{}'); } catch(e){}
 
 let popupDate    = null;
 let dragData     = null;
+let noteDate     = null;
+let noteIndex    = null;
+let noteColor    = '#6366f1';
 let activeFilters = new Set();
 
 function toggleFilter(type){
@@ -521,11 +607,13 @@ function applyFilter(){
   if(clr) clr.classList.toggle('visible', activeFilters.size > 0);
   // Apply dim to calendar cells
   document.querySelectorAll('.dc[data-type]').forEach(cell=>{
-    const t   = cell.dataset.type;
-    const hasBb = cell.dataset.bb === '1';
+    const t     = cell.dataset.type;
+    const hasBb = cell.dataset.bb  === '1';
+    const hasSt = cell.dataset.str === '1';
     const matches = activeFilters.size === 0
       || activeFilters.has(t)
-      || (hasBb && activeFilters.has('baseball'));
+      || (hasBb && activeFilters.has('baseball'))
+      || (hasSt && activeFilters.has('strength'));
     cell.classList.toggle('dc-dim', !matches);
   });
 }
@@ -571,6 +659,47 @@ function resetDay(){
   if(popupDate) { delete custom[popupDate]; saveCustom(); renderCal(); }
   hidePopup();
   showToast('Eintrag zurückgesetzt');
+}
+
+// ─── CUSTOM NOTES ────────────────────────────────────────────────────────
+function saveNotes(){ localStorage.setItem('tp2027notes', JSON.stringify(customNotes)); }
+
+function openNoteModal(dateStr, idx=null){
+  noteDate=dateStr; noteIndex=idx;
+  const note = idx!==null ? (customNotes[dateStr]||[])[idx] : null;
+  document.getElementById('np-date').textContent = fmt(pd(dateStr));
+  document.getElementById('np-text').value = note?note.text:'';
+  document.getElementById('np-detail').value = note?(note.detail||''):'';
+  noteColor = note?note.color||'#6366f1':'#6366f1';
+  document.querySelectorAll('.nc').forEach(el=>el.classList.toggle('active',el.dataset.c===noteColor));
+  document.getElementById('np-delete').style.display = idx!==null?'block':'none';
+  document.getElementById('np-title').textContent = idx!==null?'✏️ Eintrag bearbeiten':'📝 Eintrag hinzufügen';
+  document.getElementById('note-overlay').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('np-text').focus(),80);
+}
+function hideNoteModal(){ document.getElementById('note-overlay').classList.add('hidden'); noteDate=null; noteIndex=null; }
+function closeNoteModal(e){ if(e.target.id==='note-overlay') hideNoteModal(); }
+function selectColor(c){ noteColor=c; document.querySelectorAll('.nc').forEach(el=>el.classList.toggle('active',el.dataset.c===c)); }
+
+function saveNote(){
+  const text = document.getElementById('np-text').value.trim();
+  if(!text){document.getElementById('np-text').focus();return;}
+  const detail = document.getElementById('np-detail').value.trim();
+  if(!customNotes[noteDate]) customNotes[noteDate]=[];
+  const note={text,detail,color:noteColor};
+  if(noteIndex!==null) customNotes[noteDate][noteIndex]=note;
+  else customNotes[noteDate].push(note);
+  saveNotes(); hideNoteModal(); renderCal();
+  showToast('Eintrag gespeichert ✓');
+}
+function deleteNote(){
+  if(noteDate&&noteIndex!==null){
+    customNotes[noteDate].splice(noteIndex,1);
+    if(!customNotes[noteDate].length) delete customNotes[noteDate];
+    saveNotes(); renderCal();
+  }
+  hideNoteModal();
+  showToast('Eintrag gelöscht');
 }
 
 // ─── DRAG & DROP ─────────────────────────────────────────────────────────
@@ -718,6 +847,23 @@ function chipHtml(dateStr, act, isModified){
   ><span class="chip-l1">${l1}</span>${l2?`<span class="chip-l2">${l2}</span>`:''}</span>`;
 }
 
+function strChipHtml(dateStr, st){
+  const isUp = st.type==='upper';
+  const act = {y:'strength', full:st.full, detail:st.detail, short:st.short};
+  const safeAct = JSON.stringify(act).replace(/'/g,'&apos;').replace(/"/g,'&quot;');
+  return `<span class="chip ch-strength" style="margin-top:2px"
+    onclick="showPopup('${dateStr}',${safeAct})"
+  ><span class="chip-l1">${isUp?'💪 Oberkörper':'🦵 Unterkörper'}</span><span class="chip-l2">${st.short}</span></span>`;
+}
+
+function noteChipsHtml(dateStr){
+  return (customNotes[dateStr]||[]).map((n,i)=>
+    `<span class="chip ch-note" style="border-left-color:${n.color||'#6366f1'};margin-top:2px"
+      onclick="event.stopPropagation();openNoteModal('${dateStr}',${i})"
+    ><span class="chip-l1">📝 ${n.text}</span>${n.detail?`<span class="chip-l2">${n.detail}</span>`:''}</span>`
+  ).join('');
+}
+
 function bbChipHtml(dateStr, bb){
   const label = bb.g ? '⚾ Spiel' : '⚾ Training';
   const act = {y:'baseball', full:bb.full, detail:bb.detail, short:bb.short};
@@ -740,15 +886,18 @@ function renderMonth(y, m){
     const d=new Date(y,m,day), s=ds(d);
     const dow=d.getDay(), isT=d.getTime()===today.getTime();
     const act=getAct(d), isMod=custom[s]!==undefined;
-    const bb=BB[s]||null;
-    const actType = act ? act.y : (bb ? 'baseball' : 'rest');
-    const hasBb = bb ? 1 : 0;
-    const dimCls = (activeFilters.size>0 && !activeFilters.has(actType) && !(hasBb && activeFilters.has('baseball'))) ? ' dc-dim' : '';
-    cells+=`<div class="dc${dow===0?' sun':''}${isT?' tod':''}${dimCls}" data-type="${actType}" data-bb="${hasBb}"
+    const bb=BB[s]||null, st=STR[s]||null;
+    const actType = act ? act.y : (bb ? 'baseball' : (st ? 'strength' : 'rest'));
+    const hasBb = bb ? 1 : 0, hasSt = st ? 1 : 0;
+    const dimCls = (activeFilters.size>0
+      && !activeFilters.has(actType)
+      && !(hasBb && activeFilters.has('baseball'))
+      && !(hasSt && activeFilters.has('strength'))) ? ' dc-dim' : '';
+    cells+=`<div class="dc${dow===0?' sun':''}${isT?' tod':''}${dimCls}" data-type="${actType}" data-bb="${hasBb}" data-str="${hasSt}"
       ondragover="onDragOver(event,this)"
       ondragleave="onDragLeave(event,this)"
       ondrop="onDrop(event,'${s}',this)"
-    ><div class="dn">${day}</div>${chipHtml(s,act,isMod)}${bb?bbChipHtml(s,bb):''}</div>`;
+    ><div class="dn">${day}</div>${chipHtml(s,act,isMod)}${bb?bbChipHtml(s,bb):''}${st?strChipHtml(s,st):''}${noteChipsHtml(s)}<button class="dc-add" onclick="event.stopPropagation();openNoteModal('${s}')" title="Eintrag hinzufügen">+</button></div>`;
   }
 
   return `<div class="month-card">
@@ -779,6 +928,7 @@ function init(){
 
   // Build plan (generated weekly patterns)
   buildPlan();
+  buildStrength();
 
   // Phase strip
   document.getElementById('ps').innerHTML=PHASES.map(p=>
