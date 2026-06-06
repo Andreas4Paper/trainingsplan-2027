@@ -151,6 +151,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 .popup-actions{display:flex;gap:8px;}
 .popup-reset{background:var(--g100);color:var(--g600);border:none;border-radius:8px;padding:7px 14px;font-size:.72rem;font-weight:600;cursor:pointer;}
 .popup-reset:hover{background:var(--g200);}
+.popup-delete{background:#fef2f2;color:#ef4444;border:none;border-radius:8px;padding:7px 14px;font-size:.72rem;font-weight:600;cursor:pointer;}
+.popup-delete:hover{background:#fee2e2;}
+.edit-label{font-size:.72rem;font-weight:600;color:var(--g400);margin-bottom:4px;display:block;}
+.edit-select{width:100%;border:1.5px solid var(--g200);border-radius:9px;padding:9px 12px;font-size:.85rem;outline:none;margin-bottom:12px;font-family:inherit;background:#fff;cursor:pointer;appearance:none;}
+.edit-select:focus{border-color:var(--indigo);}
 
 /* RACE SECTION */
 .race-section{padding:0 36px 48px;}
@@ -261,6 +266,35 @@ footer{background:var(--navy2);color:rgba(255,255,255,.35);text-align:center;pad
   </div>
 </div>
 
+<!-- EDIT MODAL -->
+<div class="overlay hidden" id="edit-overlay" onclick="closeEditModal(event)">
+  <div class="popup" id="edit-popup">
+    <button class="popup-close" onclick="hideEditModal()">×</button>
+    <div class="popup-title">✏️ Eintrag bearbeiten</div>
+    <div class="popup-date" id="ep-date"></div>
+    <label class="edit-label">Typ</label>
+    <select id="ep-type" class="edit-select">
+      <option value="easy">🌿 Locker</option>
+      <option value="medium">🟢 GA1 / Mittellauf</option>
+      <option value="tempo">⚡ Tempolauf</option>
+      <option value="interval">💥 Intervall</option>
+      <option value="long">🔵 Long Run</option>
+      <option value="recovery">💤 Regeneration</option>
+      <option value="taper">↘ Taper</option>
+      <option value="strength">💪 Krafttraining</option>
+      <option value="race">🏆 Rennen</option>
+    </select>
+    <label class="edit-label">Bezeichnung (Chip-Label)</label>
+    <input id="ep-short" type="text" class="note-input" placeholder="z.B. 10km · 6:00" maxlength="40">
+    <label class="edit-label">Details</label>
+    <textarea id="ep-detail" class="note-textarea" placeholder="z.B. 6:00/km · Strecke XY" maxlength="120"></textarea>
+    <div class="popup-actions">
+      <button class="btn btn-primary" onclick="saveEdit()">💾 Speichern</button>
+      <button class="popup-reset" onclick="hideEditModal()">Abbrechen</button>
+    </div>
+  </div>
+</div>
+
 <!-- POPUP -->
 <div class="overlay hidden" id="overlay" onclick="closePopup(event)">
   <div class="popup" id="popup">
@@ -271,6 +305,8 @@ footer{background:var(--navy2);color:rgba(255,255,255,.35);text-align:center;pad
     <div class="popup-meta" id="p-meta"></div>
     <ul class="popup-tips" id="p-tips"></ul>
     <div class="popup-actions">
+      <button class="btn btn-primary" onclick="openEditModal()" style="font-size:.72rem;padding:7px 14px">✏️ Bearbeiten</button>
+      <button class="popup-delete" onclick="deleteEntry()">🗑 Löschen</button>
       <button class="popup-reset" id="p-reset" onclick="resetDay()">↺ Zurücksetzen</button>
     </div>
   </div>
@@ -584,6 +620,7 @@ let customNotes = {};
 try { customNotes = JSON.parse(localStorage.getItem('tp2027notes') || '{}'); } catch(e){}
 
 let popupDate    = null;
+let editDate     = null;
 let dragData     = null;
 let noteDate     = null;
 let noteIndex    = null;
@@ -758,6 +795,39 @@ function showPopup(dateStr, act){
 }
 function closePopup(e){ if(e.target.id==='overlay') hidePopup(); }
 function hidePopup(){ document.getElementById('overlay').classList.add('hidden'); popupDate=null; }
+
+// ─── BEARBEITEN ──────────────────────────────────────────────────────────
+function openEditModal(){
+  const act = getAct(pd(popupDate));
+  editDate = popupDate;
+  hidePopup();
+  document.getElementById('ep-date').textContent = fmt(pd(editDate));
+  document.getElementById('ep-type').value   = act ? act.y : 'easy';
+  document.getElementById('ep-short').value  = act ? (act.short||'') : '';
+  document.getElementById('ep-detail').value = act ? (act.detail||'') : '';
+  document.getElementById('edit-overlay').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('ep-short').focus(), 80);
+}
+function hideEditModal(){ document.getElementById('edit-overlay').classList.add('hidden'); editDate=null; }
+function closeEditModal(e){ if(e.target.id==='edit-overlay') hideEditModal(); }
+
+function saveEdit(){
+  const short = document.getElementById('ep-short').value.trim();
+  if(!short){ document.getElementById('ep-short').focus(); return; }
+  const y      = document.getElementById('ep-type').value;
+  const detail = document.getElementById('ep-detail').value.trim();
+  custom[editDate] = { y, short, full: short, detail };
+  saveCustom(); renderCal(); hideEditModal();
+  showToast('Eintrag gespeichert ✓');
+}
+
+// ─── LÖSCHEN ─────────────────────────────────────────────────────────────
+function deleteEntry(){
+  if(!popupDate) return;
+  custom[popupDate] = null; // null = kein Eintrag (Rest-Day)
+  saveCustom(); renderCal(); hidePopup();
+  showToast('Eintrag gelöscht');
+}
 
 // ─── TOAST ───────────────────────────────────────────────────────────────
 function showToast(msg){
