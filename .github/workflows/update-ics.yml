@@ -1,0 +1,30 @@
+name: Update calendar.ics
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+
+jobs:
+  update-ics:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate calendar.ics from index.html
+        run: node gen_ics.js
+
+      - name: Commit updated calendar.ics
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add calendar.ics
+          git diff --staged --quiet && echo "Keine Änderungen." || git commit -m "auto: calendar.ics aktualisiert [skip ci]"
+          git diff HEAD~1 --quiet 2>/dev/null || git push
