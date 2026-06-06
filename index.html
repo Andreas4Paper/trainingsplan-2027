@@ -305,8 +305,8 @@ footer{background:var(--navy2);color:rgba(255,255,255,.35);text-align:center;pad
     <div class="popup-meta" id="p-meta"></div>
     <ul class="popup-tips" id="p-tips"></ul>
     <div class="popup-actions">
-      <button class="btn btn-primary" onclick="openEditModal()" style="font-size:.72rem;padding:7px 14px">✏️ Bearbeiten</button>
-      <button class="popup-delete" onclick="deleteEntry()">🗑 Löschen</button>
+      <button class="btn btn-primary" id="p-edit" onclick="openEditModal()" style="font-size:.72rem;padding:7px 14px">✏️ Bearbeiten</button>
+      <button class="popup-delete" id="p-delete" onclick="deleteEntry()">🗑 Löschen</button>
       <button class="popup-reset" id="p-reset" onclick="resetDay()">↺ Zurücksetzen</button>
     </div>
   </div>
@@ -791,6 +791,10 @@ function showPopup(dateStr, act){
   tips.innerHTML = tipList.map(t=>`<li>${t}</li>`).join('');
   const isModified = custom[dateStr] !== undefined;
   document.getElementById('p-reset').style.display = isModified ? 'block' : 'none';
+  // Löschen/Bearbeiten nur für löschbare Einträge anzeigen
+  const canEdit = !['baseball','race'].includes(act.y);
+  document.getElementById('p-delete').style.display = canEdit ? 'inline-block' : 'none';
+  document.getElementById('p-edit').style.display   = canEdit ? 'inline-block' : 'none';
   document.getElementById('overlay').classList.remove('hidden');
 }
 function closePopup(e){ if(e.target.id==='overlay') hidePopup(); }
@@ -998,8 +1002,9 @@ function renderMonth(y, m){
   for(let day=1;day<=last.getDate();day++){
     const d=new Date(y,m,day), s=ds(d);
     const dow=d.getDay(), isT=d.getTime()===today.getTime();
+    const isDeleted=custom[s]===null;
     const act=getAct(d), isMod=custom[s]!==undefined;
-    const bb=BB[s]||null, st=STR[s]||null;
+    const bb=BB[s]||null, st=isDeleted?null:(STR[s]||null);
     const actType = act ? act.y : (bb ? 'baseball' : (st ? 'strength' : 'rest'));
     const hasBb = bb ? 1 : 0, hasSt = st ? 1 : 0;
     const dimCls = (activeFilters.size>0
