@@ -336,69 +336,61 @@ const PHASES = [
 
 // Spezifischer Trainingsplan – alle Einzeltermine
 const PLAN = {
-  // ── PHASE 1: GRUNDLAGE + AUFBAU (05.06 – 26.08.2026) ──────────────────
-  // Woche 05.06 – 11.06
+  // ── PHASE 1: GRUNDLAGE + AUFBAU (Jun – Aug 2026) ──────────────────────
+  // max 3 Laufeinheiten/Woche · Long Run am Sonntag
+  // ⚾ Spieltage So → Long Run auf Sa verschoben
+
+  // KW23 (Jun 1–7) – Einstieg Sa
   '2026-06-06':{y:'easy',    short:'8km · 6:20',    full:'Locker 8 km',           detail:'6:15–6:30/km · Regeneration'},
-  '2026-06-08':{y:'medium',  short:'10km · 6:10',   full:'GA1 10 km',             detail:'6:00–6:20/km'},
-  '2026-06-10':{y:'interval',short:'6×800m @ 4:40', full:'Intervalle 6×800m',     detail:'@ 4:40/km'},
-  '2026-06-11':{y:'long',    short:'14km · 6:15',   full:'Long Run 14 km',        detail:'6:15/km'},
-  // Woche 12.06 – 18.06
-  '2026-06-12':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
-  '2026-06-14':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
+  // KW24 (Jun 8–14) – Di / Do / So
+  '2026-06-09':{y:'interval',short:'6×800m @ 4:40', full:'Intervalle 6×800m',     detail:'@ 4:40/km'},
+  '2026-06-11':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:'6:30/km'},
+  '2026-06-14':{y:'long',    short:'14km · 6:15',   full:'Long Run 14 km',        detail:'6:15/km'},
+  // KW25 (Jun 15–21) – Di / Do / So
   '2026-06-16':{y:'tempo',   short:'8km · 5:35',    full:'Tempodauerlauf 8 km',   detail:'5:35/km'},
-  '2026-06-18':{y:'long',    short:'16km · 6:20',   full:'Long Run 16 km',        detail:'6:20/km'},
-  // Woche 19.06 – 25.06
-  '2026-06-19':{y:'easy',    short:'10km locker',   full:'Locker 10 km',          detail:''},
-  '2026-06-21':{y:'interval',short:'5×1km @ 4:40',  full:'Intervalle 5×1.000m',   detail:'@ 4:40/km'},
-  '2026-06-23':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
-  '2026-06-25':{y:'long',    short:'18km · 6:20',   full:'Long Run 18 km',        detail:'6:20/km'},
-  // Woche 26.06 – 02.07
-  '2026-06-26':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
-  '2026-06-28':{y:'tempo',   short:'10km · 5:35',   full:'Tempodauerlauf 10 km',  detail:'5:35/km'},
-  '2026-06-30':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
-  '2026-07-02':{y:'long',    short:'20km · 6:20',   full:'Long Run 20 km',        detail:'6:20/km'},
-  // Woche 03.07 – 09.07
-  '2026-07-03':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
-  '2026-07-05':{y:'interval',short:'6×1km @ 4:40',  full:'Intervalle 6×1.000m',   detail:'@ 4:40/km'},
-  '2026-07-07':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
-  '2026-07-09':{y:'long',    short:'22km · 6:20',   full:'Long Run 22 km',        detail:'6:20/km'},
-  // Woche 10.07 – 16.07
-  '2026-07-10':{y:'easy',    short:'10km locker',   full:'Locker 10 km',          detail:''},
-  '2026-07-12':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
-  '2026-07-14':{y:'tempo',   short:'10km · 5:30',   full:'Tempodauerlauf 10 km',  detail:'5:30/km'},
-  '2026-07-16':{y:'long',    short:'24km · 6:20',   full:'Long Run 24 km',        detail:'6:20/km'},
-  // Woche 17.07 – 23.07
-  '2026-07-17':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
-  '2026-07-19':{y:'interval',short:'5×1,2km @ 4:40',full:'Intervalle 5×1.200m',   detail:'@ 4:40/km'},
+  '2026-06-18':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:'6:30/km'},
+  '2026-06-21':{y:'long',    short:'16km · 6:20',   full:'Long Run 16 km',        detail:'6:20/km'},
+  // KW26 (Jun 22–28) – Di / Do / Sa  ⚾ Spiel So 11h → Long Run Sa
+  '2026-06-23':{y:'interval',short:'5×1km @ 4:40',  full:'Intervalle 5×1.000m',   detail:'@ 4:40/km'},
+  '2026-06-25':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:'6:30/km'},
+  '2026-06-27':{y:'long',    short:'18km · 6:20',   full:'Long Run 18 km',        detail:'6:20/km · ⚾ Spiel ab 16:30h'},
+  // KW27 (Jun 29 – Jul 5) – Di / Do / So
+  '2026-06-30':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
+  '2026-07-02':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:'6:30/km'},
+  '2026-07-05':{y:'long',    short:'20km · 6:20',   full:'Long Run 20 km',        detail:'6:20/km'},
+  // KW28 (Jul 6–12) – Di / Do / So  ⚾ Spiel So 13:30h → Morgenrun OK
+  '2026-07-07':{y:'tempo',   short:'10km · 5:30',   full:'Tempodauerlauf 10 km',  detail:'5:30/km'},
+  '2026-07-09':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:'6:30/km'},
+  '2026-07-12':{y:'long',    short:'22km · 6:20',   full:'Long Run 22 km',        detail:'6:20/km · früh starten · ⚾ 13:30h'},
+  // KW29 (Jul 13–19) – Di / Do / So
+  '2026-07-14':{y:'interval',short:'6×1km @ 4:40',  full:'Intervalle 6×1.000m',   detail:'@ 4:40/km'},
+  '2026-07-16':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:'6:30/km'},
+  '2026-07-19':{y:'long',    short:'24km · 6:20',   full:'Long Run 24 km',        detail:'6:20/km'},
+  // KW30 (Jul 20–26) – Di / Do / Sa  ⚾ Spiel So 10:30h → Long Run Sa
   '2026-07-21':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
-  '2026-07-23':{y:'long',    short:'26km · 6:20',   full:'Long Run 26 km',        detail:'6:20/km'},
-  // Woche 24.07 – 30.07 (Entlastung)
-  '2026-07-24':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
-  '2026-07-26':{y:'easy',    short:'10km locker',   full:'Locker 10 km',          detail:''},
-  '2026-07-28':{y:'tempo',   short:'8km · 5:35',    full:'Tempodauerlauf 8 km',   detail:'5:35/km'},
-  '2026-07-30':{y:'long',    short:'20km · 6:30',   full:'Long Run 20 km',        detail:'6:30/km · Entlastung'},
-  // Woche 31.07 – 06.08
-  '2026-07-31':{y:'easy',    short:'10km locker',   full:'Locker 10 km',          detail:''},
-  '2026-08-02':{y:'interval',short:'6×1km @ 4:40',  full:'Intervalle 6×1.000m',   detail:'@ 4:40/km'},
-  '2026-08-04':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
-  '2026-08-06':{y:'long',    short:'24km · 6:20',   full:'Long Run 24 km',        detail:'6:20/km'},
-  // Woche 07.08 – 13.08
-  '2026-08-07':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
-  '2026-08-09':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
-  '2026-08-11':{y:'tempo',   short:'10km · 5:30',   full:'Tempodauerlauf 10 km',  detail:'5:30/km'},
-  '2026-08-13':{y:'long',    short:'26km · 6:20',   full:'Long Run 26 km',        detail:'6:20/km'},
-  // Woche 14.08 – 20.08
-  '2026-08-14':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
-  '2026-08-16':{y:'interval',short:'5×1km @ 4:40',  full:'Intervalle 5×1.000m',   detail:'@ 4:40/km'},
-  '2026-08-18':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
-  '2026-08-20':{y:'long',    short:'22km · 6:20',   full:'Long Run 22 km',        detail:'6:20/km'},
-  // Woche 21.08 – 27.08 (Taper vor Grafschaftslauf)
-  '2026-08-21':{y:'taper',   short:'8km locker',    full:'Taper 8 km',            detail:'Taper'},
-  '2026-08-23':{y:'taper',   short:'6km locker',    full:'Taper 6 km',            detail:'Taper'},
-  '2026-08-25':{y:'taper',   short:'5km locker',    full:'Taper 5 km',            detail:'Taper'},
-  '2026-08-27':{y:'taper',   short:'12km locker',   full:'Taper 12 km',           detail:'Taper'},
-  // ── WETTKAMPFBLOCK SEPTEMBER 2026 ──────────────────────────────────────
+  '2026-07-23':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:'6:30/km'},
+  '2026-07-25':{y:'long',    short:'26km · 6:20',   full:'Long Run 26 km',        detail:'6:20/km · ⚾ Spiel So'},
+  // KW31 (Jul 27 – Aug 2) – Di / Do / So (Entlastungswoche)
+  '2026-07-28':{y:'tempo',   short:'8km · 5:35',    full:'Tempodauerlauf 8 km',   detail:'5:35/km · Entlastung'},
+  '2026-07-30':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:'6:30/km · Entlastung'},
+  '2026-08-02':{y:'long',    short:'20km · 6:30',   full:'Long Run 20 km',        detail:'6:30/km · Entlastung'},
+  // KW32 (Aug 3–9) – Di / Do / So
+  '2026-08-04':{y:'interval',short:'6×1km @ 4:40',  full:'Intervalle 6×1.000m',   detail:'@ 4:40/km'},
+  '2026-08-06':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:'6:30/km'},
+  '2026-08-09':{y:'long',    short:'24km · 6:20',   full:'Long Run 24 km',        detail:'6:20/km'},
+  // KW33 (Aug 10–16) – Di / Do / So
+  '2026-08-11':{y:'medium',  short:'12km · 6:20',   full:'GA1 12 km',             detail:'6:20/km'},
+  '2026-08-13':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:'6:30/km'},
+  '2026-08-16':{y:'long',    short:'26km · 6:20',   full:'Long Run 26 km',        detail:'6:20/km'},
+  // KW34 (Aug 17–23) – Taper 1 vor Grafschaftslauf (Di / Do / So)
+  '2026-08-18':{y:'taper',   short:'8km locker',    full:'Taper 8 km',            detail:'7:00/km'},
+  '2026-08-20':{y:'taper',   short:'6km locker',    full:'Taper 6 km',            detail:'7:00/km'},
+  '2026-08-23':{y:'taper',   short:'12km · 6:00',   full:'Taper 12 km',           detail:'6:00/km'},
+  // KW35 (Aug 24–30) – Race week Grafschaftslauf (Di / Do / So=Rennen)
+  '2026-08-25':{y:'taper',   short:'5km locker',    full:'Taper 5 km',            detail:'7:00/km'},
+  '2026-08-27':{y:'taper',   short:'6km locker',    full:'Taper 6 km',            detail:'7:00/km'},
   // 30.08: Grafschaftslauf → RACES
+  // ── WETTKAMPFBLOCK SEPTEMBER 2026 ──────────────────────────────────────
   '2026-09-01':{y:'recovery',short:'6km Regen.',    full:'Locker 6 km',           detail:'Regeneration nach Rennen'},
   '2026-09-03':{y:'recovery',short:'8km Regen.',    full:'Locker 8 km',           detail:'Regeneration'},
   '2026-09-05':{y:'easy',    short:'4km locker',    full:'Locker 4 km',           detail:'Einlaufen vor Rennen'},
@@ -409,11 +401,11 @@ const PLAN = {
   // 13.09: City Move → RACES
   '2026-09-15':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:'Regeneration'},
   '2026-09-17':{y:'medium',  short:'10km · 6:10',   full:'GA1 10 km',             detail:'6:10/km'},
-  '2026-09-19':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:''},
+  '2026-09-20':{y:'easy',    short:'8km locker',    full:'Locker 8 km',           detail:'6:30/km'},
   // 26.09: Böckstiegellauf → RACES
   '2026-09-29':{y:'recovery',short:'8km Regen.',    full:'Locker 8 km',           detail:'Regeneration nach Rennen'},
   '2026-10-01':{y:'medium',  short:'10km · 6:10',   full:'GA1 10 km',             detail:'6:10/km'},
-  '2026-10-03':{y:'long',    short:'12km · 6:20',   full:'Long Run 12 km',        detail:'6:20/km'},
+  '2026-10-04':{y:'long',    short:'12km · 6:20',   full:'Long Run 12 km',        detail:'6:20/km'},
   // Woche 04.10 – 24.10 → generatedet (fillWeek)
   // 25.10: DJK HM → RACES
   // ── WINTERBLOCK Nov 2026 – Feb 2027 → generiert (fillWeek) ────────────
